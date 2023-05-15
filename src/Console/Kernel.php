@@ -10,7 +10,7 @@ use Toybox\Core\Console\Commands\InspireCommand;
 use Toybox\Core\Console\Commands\MakeBlockCommand;
 use Toybox\Core\Console\Commands\MakePostTypeCommand;
 use Toybox\Core\Console\Commands\MakeShortcodeCommand;
-use Toybox\Core\Console\Commands\MediaRegenerateCommand;
+// use Toybox\Core\Console\Commands\MediaRegenerateCommand;
 use Toybox\Core\Theme;
 
 // Set the Toybox core directory
@@ -63,7 +63,7 @@ class Kernel
         $this->application->add(new MakeBlockCommand());
         $this->application->add(new MakePostTypeCommand());
         $this->application->add(new MakeShortcodeCommand());
-        $this->application->add(new MediaRegenerateCommand());
+        // $this->application->add(new MediaRegenerateCommand());
     }
 
     /**
