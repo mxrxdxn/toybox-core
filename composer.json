@@ -1,0 +1,28 @@
+{
+    "name": "toybox/core",
+    "description": "The core that drives the Toybox WordPress theme.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Toybox\\Core\\": "src/"
+        },
+        "files": ["src/Helpers.php"]
+    },
+    "authors": [
+        {
+            "name": "Ron Marsden",
+            "email": "rm@maxwebsolutions.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.1",
+        "filp/whoops": "^2.15",
+        "symfony/var-dumper": "^6.2",
+        "spatie/ray": "^1.37",
+        "symfony/console": "^6.2",
+        "doctrine/inflector": "^2.0",
+        "rosell-dk/webp-convert": "^2.9"
+    }
+}
