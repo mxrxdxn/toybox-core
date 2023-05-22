@@ -1,6 +1,6 @@
 <?php
 
-use Toybox\Core\Theme;
+use Toybox\Core\Components\Blocks;
 
 $assets = [
     "css" => [
@@ -12,5 +12,5 @@ $assets = [
     ],
 ];
 
-Theme::registerBlockAssets($assets);
+Blocks::registerAssets($assets);
 register_block_type(__DIR__);

@@ -1,11 +1,11 @@
 <?php
 
+use Carbon\Carbon;
+use Doctrine\Inflector\InflectorFactory;
+
 /**
  * The path to the mix-manifest.json file.
  */
-
-use Doctrine\Inflector\InflectorFactory;
-
 const MIX_MANIFEST = TOYBOX_DIR . "/mix-manifest.json";
 
 /**
@@ -300,5 +300,19 @@ if (! function_exists('image_alt')) {
     function image_alt(int $imageID): string
     {
         return get_post_meta($imageID, "_wp_attachment_image_alt", true);
+    }
+}
+
+if (! function_exists('now')) {
+    /**
+     * Shorthand function to retrieve the current time as a Carbon object.
+     *
+     * @param DateTimeZone|string|null $timeZone The timezone to use.
+     *
+     * @return Carbon
+     */
+    function now(DateTimeZone|string|null $timeZone = null): Carbon
+    {
+        return Carbon::now($timeZone);
     }
 }

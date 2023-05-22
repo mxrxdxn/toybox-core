@@ -23,6 +23,7 @@
         "spatie/ray": "^1.37",
         "symfony/console": "^6.2",
         "doctrine/inflector": "^2.0",
-        "rosell-dk/webp-convert": "^2.9"
+        "rosell-dk/webp-convert": "^2.9",
+        "nesbot/carbon": "^2.66"
     }
 }

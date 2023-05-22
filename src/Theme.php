@@ -3,15 +3,21 @@
 namespace Toybox\Core;
 
 use Exception;
-use Whoops\Handler\PrettyPageHandler;
-use Whoops\Run;
+use Toybox\Core\Components\Admin;
+use Toybox\Core\Components\AdminBar;
+use Toybox\Core\Components\Login;
+use Toybox\Core\Components\Misc;
+use Toybox\Core\Components\User;
+
+// Disable file editing from wp-admin
+define('DISALLOW_FILE_EDIT', true);
 
 class Theme
 {
     /**
      * The theme version.
      */
-    const VERSION = "2.0.1";
+    const VERSION = "2.1.0";
 
     /**
      * This directory.
@@ -42,9 +48,6 @@ class Theme
         // Register shortcodes
         self::registerShortcodes();
 
-        // Register options page
-        self::registerOptionsPage();
-
         // Load snippets
         self::loadSnippets();
     }
@@ -58,6 +61,12 @@ class Theme
     private static function setup(): void
     {
         add_action("after_setup_theme", function () {
+            // Enable custom logo
+            add_theme_support('custom-logo');
+
+            // Enable custom backgrounds
+            add_theme_support('custom-background');
+
             // Add default posts and comments RSS feed links to <head>.
             add_theme_support('automatic-feed-links');
 
@@ -95,6 +104,26 @@ class Theme
 
             return $toolbars;
         });
+
+        // Set the first visit cookie
+        add_action("init", function () {
+            if (isset($_COOKIE['_wp_first_time']) || User::loggedIn()) {
+                return false;
+            } else {
+                // expires in 30 days.
+                setcookie('_wp_first_time', 1, time() + (WEEK_IN_SECONDS * 4), COOKIEPATH, COOKIE_DOMAIN, false);
+
+                return true;
+            }
+        });
+
+        Misc::optimizeTables();
+        Admin::hideWelcomePanel();
+        Admin::disableUpdateNag();
+        Admin::setFooterText();
+        AdminBar::setLogo();
+        Login::maskErrors();
+        Login::setLogo();
     }
 
     /**
@@ -197,224 +226,6 @@ class Theme
                         require_once("{$shortcodeDir}/init.php");
                     });
                 }
-            }
-        }
-    }
-
-    /**
-     * Registers the theme's option pages using ACF. These pages can then be populated via ACF.
-     * If ACF is not installed, nothing will fire.
-     *
-     * @return void
-     */
-    private static function registerOptionsPage(): void
-    {
-        if (function_exists('acf_add_options_page')) {
-            // Main Settings Page
-            acf_add_options_page([
-                'page_title' => 'Theme General Settings',
-                'menu_title' => 'Theme Settings',
-                'menu_slug'  => 'theme-general-settings',
-                'capability' => 'edit_posts',
-                'redirect'   => false,
-            ]);
-        }
-
-        if (function_exists('acf_add_options_sub_page')) {
-            // Contact Information
-            acf_add_options_sub_page([
-                'page_title'  => 'Contact Information',
-                'menu_title'  => 'Contact',
-                'parent_slug' => 'theme-general-settings',
-            ]);
-
-            // Social Media
-            acf_add_options_sub_page([
-                'page_title'  => 'Social Media',
-                'menu_title'  => 'Social Media',
-                'parent_slug' => 'theme-general-settings',
-            ]);
-        }
-    }
-
-    /**
-     * Registers menu locations and names in WordPress.
-     *
-     * Uses the same syntax as the native `register_nav_menus` function:
-     *
-     * ```
-     * [
-     *     'menu_location' => __("Menu Name", "text-domain")
-     * ]
-     * ```
-     *
-     * Text domain isn't required - in fact, you can completely omit the __()
-     * call and just pass in a string if you want.
-     *
-     * @param array $menus
-     *
-     * @return void
-     */
-    public static function setMenus(array $menus = []): void
-    {
-        // Register menus
-        add_action("after_setup_theme", function () use ($menus) {
-            // Register menus
-            register_nav_menus($menus);
-        });
-    }
-
-    /**
-     * Disables WordPress's built-in emoji library from being included on pages.
-     *
-     * @return void
-     */
-    public static function disableEmoji(): void
-    {
-        add_action('init', function () {
-            remove_action('wp_head', 'print_emoji_detection_script', 7);
-            remove_action('admin_print_scripts', 'print_emoji_detection_script');
-            remove_action('wp_print_styles', 'print_emoji_styles');
-            remove_action('admin_print_styles', 'print_emoji_styles');
-            remove_filter('the_content_feed', 'wp_staticize_emoji');
-            remove_filter('comment_text_rss', 'wp_staticize_emoji');
-            remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
-            add_filter('tiny_mce_plugins', function ($plugins) {
-                if (is_array($plugins)) {
-                    return array_diff($plugins, ['wpemoji']);
-                } else {
-                    return [];
-                }
-            });
-        });
-    }
-
-    /**
-     * Disables WordPress's native embed library from loading.
-     *
-     * @return void
-     */
-    public static function disableEmbeds(): void
-    {
-        add_action('init', function () {
-            if (! is_admin()) {
-                wp_deregister_script('wp-embed');
-            }
-        });
-    }
-
-    /**
-     * Disables WordPress's comment-reply script from being included on pages and posts.
-     *
-     * @return void
-     */
-    public static function disableComments(): void
-    {
-        add_action('init', function () {
-            wp_deregister_script('comment-reply');
-        });
-    }
-
-    /**
-     * Disables the WordPress admin bar from being rendered.
-     *
-     * @return void
-     */
-    public static function disableAdminBar(): void
-    {
-        add_action('after_setup_theme', function () {
-            add_filter('show_admin_bar', '__return_false');
-        });
-    }
-
-    /**
-     * Set custom image sizes for media uploader.
-     *
-     * @param array $sizes
-     *
-     * @return void
-     */
-    public static function setImageSizes(array $sizes): void
-    {
-        add_action('after_setup_theme', function () use ($sizes) {
-            foreach ($sizes as $size => $options) {
-                add_image_size($size, $options['width'], $options['height'], $options['crop']);
-            }
-        });
-
-        add_filter('image_size_names_choose', function ($sizesArray) use ($sizes) {
-            $s = [];
-
-            foreach ($sizes as $key => $options) {
-                $s[$key] = __($options['name']);
-            }
-
-            return array_merge($sizesArray, $s);
-        });
-    }
-
-    /**
-     * Sets up error reporting for the application. Note that the pretty page handler will only display when WP_DEBUG is
-     * set to true.
-     *
-     * @param int|null $errorLevel
-     *
-     * @return void
-     */
-    public static function bootErrorHandler(?int $errorLevel): void
-    {
-        add_action("after_setup_theme", function () use ($errorLevel) {
-            // Register the error handler, but only if we're in a debug environment.
-            // Otherwise, there could be information disclosure.
-            if (defined("WP_DEBUG") && WP_DEBUG === true) {
-                // Sets the error reporting level - while we're in debug mode
-                // we should really show all errors, even if they're just
-                // warnings or notices.
-                error_reporting($errorLevel);
-
-                $whoops = new Run();
-                $whoops->pushHandler(new PrettyPageHandler());
-                $whoops->register();
-            }
-        }, 1);
-    }
-
-    /**
-     * Registers block assets for use in WordPress.
-     *
-     * @param array $assets
-     *
-     * @return void
-     */
-    public static function registerBlockAssets(array $assets): void
-    {
-        foreach ($assets as $assetType => $assetList) {
-            switch ($assetType) {
-                case "css":
-                    foreach ($assetList as $assetHandle => $asset) {
-                        if ($asset) {
-                            $split       = explode("?id=", $asset);
-                            $url         = $split[0];
-                            $cacheBuster = $split[1];
-
-                            wp_register_style($assetHandle, $url, [], $cacheBuster);
-                        }
-                    }
-
-                    break;
-
-                case "js":
-                    foreach ($assetList as $assetHandle => $asset) {
-                        if ($asset) {
-                            $split       = explode("?id=", $asset);
-                            $url         = $split[0];
-                            $cacheBuster = $split[1];
-
-                            wp_register_script($assetHandle, $url, [], $cacheBuster);
-                        }
-                    }
-
-                    break;
             }
         }
     }
