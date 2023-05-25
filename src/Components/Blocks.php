@@ -43,4 +43,22 @@ class Blocks
             }
         }
     }
+
+    /**
+     * Disable inner block wrapping on the frontend.
+     *
+     * @param array $blockNames
+     *
+     * @return void
+     */
+    public static function disableWrap(array $blockNames): void
+    {
+        add_filter('acf/blocks/wrap_frontend_innerblocks', function ($wrap, $name) use ($blockNames) {
+            if (in_array($name, $blockNames)) {
+                return false;
+            }
+
+            return true;
+        }, 10, 2);
+    }
 }
