@@ -13,11 +13,11 @@ use Toybox\Core\Console\Commands\MakeShortcodeCommand;
 // use Toybox\Core\Console\Commands\MediaRegenerateCommand;
 use Toybox\Core\Theme;
 
-// Set the Toybox core directory
-const TOYBOX_CORE = __DIR__ . "/../";
-
 // Directory separator string
 const DS = DIRECTORY_SEPARATOR;
+
+// Set the Toybox core directory
+const TOYBOX_CORE = __DIR__ . DS . ".." . DS;
 
 class Kernel
 {
