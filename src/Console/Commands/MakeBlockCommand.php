@@ -90,6 +90,7 @@ class MakeBlockCommand extends Command
             file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/resources/scss/_variables.scss", $variablesFile);
 
             $output->writeln("<info>Created SCSS stylesheet: ./blocks/{$sluggedName}/resources/scss/{$sluggedName}.scss</info>");
+            $output->writeln("<info>Make sure you uncomment the style registration line inside ./blocks/{$sluggedName}/init.php</info>");
         }
 
         // Create JS
@@ -102,6 +103,7 @@ class MakeBlockCommand extends Command
             file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/resources/js/{$sluggedName}.js", $jsFile);
 
             $output->writeln("<info>Created JS script: ./blocks/{$sluggedName}/resources/js/{$sluggedName}.js</info>");
+            $output->writeln("<info>Make sure you uncomment the script registration line inside ./blocks/{$sluggedName}/init.php</info>");
         }
 
         // Show a final message if resources were added
