@@ -16,6 +16,9 @@ use Toybox\Core\Theme;
 // Set the Toybox core directory
 const TOYBOX_CORE = __DIR__ . "/../";
 
+// Directory separator string
+const DS = DIRECTORY_SEPARATOR;
+
 class Kernel
 {
     /**
@@ -74,7 +77,7 @@ class Kernel
      */
     private static function isBedrock(): bool
     {
-        return file_exists(__DIR__ . "/../../../../../wp/");
+        return file_exists(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp" . DS . "");
     }
 
     /**
@@ -91,9 +94,9 @@ class Kernel
 
         // Connect to WordPress
         if (self::isBedrock()) {
-            require_once(__DIR__ . "/../../../../../wp/wp-load.php");
+            require_once(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp" . DS . "wp-load.php");
         } else {
-            require_once(__DIR__ . "/../../../../../wp-load.php");
+            require_once(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp-load.php");
         }
 
         // Boot the theme
