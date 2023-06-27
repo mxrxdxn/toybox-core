@@ -77,7 +77,7 @@ class Kernel
      */
     private static function isBedrock(): bool
     {
-        return file_exists(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp" . DS . "");
+        return file_exists(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp" . DS . "");
     }
 
     /**
@@ -94,9 +94,9 @@ class Kernel
 
         // Connect to WordPress
         if (self::isBedrock()) {
-            require_once(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp" . DS . "wp-load.php");
+            require_once(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp" . DS . "wp-load.php");
         } else {
-            require_once(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp-load.php");
+            require_once(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp-load.php");
         }
 
         // Boot the theme
