@@ -105,6 +105,9 @@ class Theme
             return $toolbars;
         });
 
+        // Load only the blocks required for the page
+        add_filter('should_load_separate_core_block_assets', '__return_true');
+
         // Set the first visit cookie
         add_action("init", function () {
             if (isset($_COOKIE['_wp_first_time']) || User::loggedIn()) {
