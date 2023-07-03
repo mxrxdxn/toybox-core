@@ -10,14 +10,16 @@ use Toybox\Core\Components\Misc;
 use Toybox\Core\Components\User;
 
 // Disable file editing from wp-admin
-define('DISALLOW_FILE_EDIT', true);
+if (! defined("DISALLOW_FILE_EDIT")) {
+    define('DISALLOW_FILE_EDIT', true);
+}
 
 class Theme
 {
     /**
      * The theme version.
      */
-    const VERSION = "2.1.3";
+    const VERSION = "2.2.0";
 
     /**
      * This directory.
