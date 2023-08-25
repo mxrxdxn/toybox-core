@@ -316,3 +316,26 @@ if (! function_exists('now')) {
         return Carbon::now($timeZone);
     }
 }
+
+if (! function_exists("lazy")) {
+    /**
+     * Return the attributes for lazy loading resources.
+     *
+     * @param string $blockName
+     * @param array  $types
+     *
+     * @return string
+     * @throws Exception
+     */
+    function lazy(string $blockName, array $types = ["css", "js"]): string
+    {
+        $attributes = "";
+
+        foreach ($types as $type) {
+            $path        = mix("/assets/{$type}/blocks/{$blockName}.{$type}");
+            $attributes .= " data-lazy-{$type}=\"{$path}\"";
+        }
+
+        return $attributes;
+    }
+}
