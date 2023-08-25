@@ -1,5 +1,6 @@
 <?php
 
+use Toybox\Core\Components\ACF;
 use Toybox\Core\Components\Blocks;
 
 $assets = [
@@ -12,5 +13,6 @@ $assets = [
     // ],
 ];
 
+ACF::setSavePoint("Example Block");
 Blocks::registerAssets($assets);
 register_block_type(__DIR__);

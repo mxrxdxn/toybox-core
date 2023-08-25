@@ -19,4 +19,34 @@ class ACF
             return $api;
         });
     }
+
+    /**
+     * Sets the save point for a block.
+     *
+     * @param string $blockName
+     *
+     * @return void
+     */
+    public static function setSavePoint(string $blockName): void
+    {
+        // Set the filename
+        add_filter('acf/json/save_file_name', function ($filename, $post, $load_path) {
+            $filename = strtolower(slugify($post['title'])) . '.json';
+
+            return $filename;
+        }, 10, 3);
+
+        // Set the path
+        $name = "Block: {$blockName}";
+
+        add_filter("acf/settings/save_json/name={$name}", function ($path) use ($blockName, $name) {
+            $path = get_stylesheet_directory() . '/blocks/' . slugify($blockName) . '/acf-json';
+
+            if (! file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            return $path;
+        });
+    }
 }
