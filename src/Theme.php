@@ -7,6 +7,7 @@ use Toybox\Core\Components\Admin;
 use Toybox\Core\Components\AdminBar;
 use Toybox\Core\Components\Login;
 use Toybox\Core\Components\Misc;
+use Toybox\Core\Components\Pattern;
 use Toybox\Core\Components\User;
 
 // Disable file editing from wp-admin
@@ -19,7 +20,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.3.1";
+    const VERSION = "2.4.0";
 
     /**
      * This directory.
@@ -121,6 +122,12 @@ class Theme
                 return true;
             }
         });
+
+        // Deregister core block patterns
+        Pattern::deregisterDefaultPatterns();
+
+        // Register our default pattern
+        Pattern::registerCategory("Theme Patterns", "theme-patterns");
 
         Misc::optimizeTables();
         Admin::hideWelcomePanel();
