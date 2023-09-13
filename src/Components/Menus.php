@@ -30,4 +30,37 @@ class Menus
             register_nav_menus($menus);
         });
     }
+
+    /**
+     * Returns or prints a menu.
+     *
+     * @param string $menuName The value for `theme_location`.
+     * @param array  $params   The parameters to override. Note that `theme_location` and `return` cannot be overridden.
+     * @param bool   $return   Return the menu as a string, or print it.
+     *
+     * @return string|bool
+     */
+    public static function get(string $menuName, array $params = [], bool $return = true): string|bool
+    {
+        if (empty($params)) {
+            $menu = wp_nav_menu([
+                "theme_location"  => "header_nav",
+                "container_class" => "header-nav-container",
+                "return"          => true,
+            ]);
+        } else {
+            $params['theme_location'] = $menuName;
+            $params['return']         = true;
+
+            $menu = wp_nav_menu($params);
+        }
+
+        if ($return === true) {
+            return $menu;
+        }
+
+        echo $menu;
+
+        return true;
+    }
 }
