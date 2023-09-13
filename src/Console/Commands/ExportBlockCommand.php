@@ -34,6 +34,9 @@ class ExportBlockCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // This command is now deprecated as we save block ACF fields directly to the block by default.
+        $output->writeln("<comment>This command is now deprecated as we save block ACF fields directly to the block by default.</comment>");
+
         // Arguments
         $name = $input->getArgument("name");
 
