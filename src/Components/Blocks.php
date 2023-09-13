@@ -61,4 +61,21 @@ class Blocks
             return true;
         }, 10, 2);
     }
+
+    /**
+     * Render a block, outside of Gutenberg.
+     *
+     * @param string $blockName The namespace/name of the block. Toybox blocks are usually prefixed as toybox/{name}.
+     * @param array  $data      An array of data to load into the block, which will be used by all get_field calls.
+     *
+     * @return void
+     */
+    public static function render(string $blockName, array $data = []): void
+    {
+        acf_render_block([
+            'id'   => uniqid('block_'),
+            'name' => $blockName,
+            'data' => $data,
+        ]);
+    }
 }
