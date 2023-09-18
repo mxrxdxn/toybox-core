@@ -24,6 +24,7 @@
         "symfony/console": "^6.3",
         "doctrine/inflector": "^2.0",
         "rosell-dk/webp-convert": "^2.9",
-        "nesbot/carbon": "^2.70"
+        "nesbot/carbon": "^2.70",
+        "mobiledetect/mobiledetectlib": "^3.74"
     }
 }
