@@ -7,13 +7,17 @@ class ACF
     /**
      * Sets the API key used in the ACF backend when displaying maps within custom fields.
      *
-     * @param string $key
+     * @param string|null $key
      *
      * @return void
      */
-    public static function setMapsApiKey(string $key): void
+    public static function setMapsApiKey(string|null $key = null): void
     {
         add_filter('acf/fields/google_map/api', function ($api) use ($key) {
+            if ($key === null) {
+                $key = get_field("google_maps_api_key", "options");
+            }
+
             $api['key'] = $key;
 
             return $api;
