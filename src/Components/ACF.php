@@ -25,6 +25,28 @@ class ACF
     }
 
     /**
+     * Loads ACF fields from block directories.
+     *
+     * @return void
+     */
+    public static function loadBlockACFFields(): void
+    {
+        $path = get_theme_file_path() . "/blocks";
+
+        if (file_exists($path)) {
+            foreach (glob("{$path}/*") as $blockDir) {
+                // Load the ACF JSON
+                add_filter('acf/settings/load_json', function ($paths) use ($blockDir) {
+                    // Add the path
+                    $paths[] = "{$blockDir}/acf-json";
+
+                    return $paths;
+                });
+            }
+        }
+    }
+
+    /**
      * Sets the save point for a block.
      *
      * @param string $blockName
@@ -44,7 +66,7 @@ class ACF
         $name = "Block: {$blockName}";
 
         add_filter("acf/settings/save_json/name={$name}", function ($path) use ($blockName, $name) {
-            $path = get_stylesheet_directory() . '/blocks/' . slugify($blockName) . '/acf-json';
+            $path = get_theme_file_path() . '/blocks/' . slugify($blockName) . '/acf-json';
 
             if (! file_exists($path)) {
                 mkdir($path, 0777, true);
@@ -52,5 +74,132 @@ class ACF
 
             return $path;
         });
+    }
+
+    /**
+     * Set the save path for ACF post types.
+     * @return void
+     */
+    public static function setPostTypeSavePath(): void
+    {
+        add_filter("acf/settings/save_json/type=acf-post-type", function ($path) {
+            $path = get_theme_file_path() . '/post-types';
+
+            if (! file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            return $path;
+        });
+    }
+
+    /**
+     * Set the load path for ACF post types.
+     * @return void
+     */
+    public static function setPostTypeLoadPath(): void
+    {
+        $path = get_theme_file_path() . "/post-types";
+
+        if (file_exists($path)) {
+            // Load the ACF JSON
+            add_filter('acf/settings/load_json', function ($paths) use ($path) {
+                // Add the path
+                $paths[] = "{$path}";
+
+                return $paths;
+            });
+        }
+    }
+
+    /**
+     * Set the save path for ACF taxonomies.
+     * @return void
+     */
+    public static function setTaxonomySavePath(): void
+    {
+        add_filter("acf/settings/save_json/type=acf-taxonomy", function ($path) {
+            $path = get_theme_file_path() . '/taxonomies';
+
+            if (! file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            return $path;
+        });
+    }
+
+    /**
+     * Set the load path for ACF setting pages.
+     * @return void
+     */
+    public static function setTaxonomyLoadPath(): void
+    {
+        $path = get_theme_file_path() . "/taxonomies";
+
+        if (file_exists($path)) {
+            // Load the ACF JSON
+            add_filter('acf/settings/load_json', function ($paths) use ($path) {
+                // Add the path
+                $paths[] = "{$path}";
+
+                return $paths;
+            });
+        }
+    }
+
+    /**
+     * Set the save path for ACF setting pages.
+     * @return void
+     */
+    public static function setOptionsPageSavePath(): void
+    {
+        add_filter("acf/settings/save_json/type=acf-ui-options-page", function ($path) {
+            $path = get_theme_file_path() . '/options-pages';
+
+            if (! file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            return $path;
+        });
+    }
+
+    /**
+     * Set the load path for ACF setting pages.
+     * @return void
+     */
+    public static function setOptionsPageLoadPath(): void
+    {
+        $path = get_theme_file_path() . "/options-pages";
+
+        if (file_exists($path)) {
+            // Load the ACF JSON
+            add_filter('acf/settings/load_json', function ($paths) use ($path) {
+                // Add the path
+                $paths[] = "{$path}";
+
+                return $paths;
+            });
+        }
+    }
+
+    /**
+     * Shorthand function to register all paths.
+     * @return void
+     */
+    public static function setPaths(): void
+    {
+        // Post Types
+        static::setPostTypeSavePath();
+        static::setPostTypeLoadPath();
+
+        // Taxonomies
+        static::setTaxonomySavePath();
+        static::setTaxonomyLoadPath();
+
+        // Options Pages
+        static::setOptionsPageSavePath();
+        static::setOptionsPageLoadPath();
     }
 }

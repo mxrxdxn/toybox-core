@@ -3,6 +3,7 @@
 namespace Toybox\Core;
 
 use Exception;
+use Toybox\Core\Components\ACF;
 use Toybox\Core\Components\Admin;
 use Toybox\Core\Components\AdminBar;
 use Toybox\Core\Components\Login;
@@ -20,7 +21,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.6.1";
+    const VERSION = "2.7.0";
 
     /**
      * This directory.
@@ -43,10 +44,13 @@ class Theme
 
         // Register blocks
         self::registerBlocks();
-        self::loadBlockACFFields();
 
         // Register post types
         self::registerPostTypes();
+
+        // Register ACF fields
+        ACF::loadBlockACFFields();
+        ACF::setPaths();
 
         // Register shortcodes
         self::registerShortcodes();
@@ -174,28 +178,6 @@ class Theme
                         }
                     }
                 }, 5);
-            }
-        }
-    }
-
-    /**
-     * Loads ACF fields from block directories.
-     *
-     * @return void
-     */
-    private static function loadBlockACFFields(): void
-    {
-        $path = get_theme_file_path() . "/blocks";
-
-        if (file_exists($path)) {
-            foreach (glob("{$path}/*") as $blockDir) {
-                // Load the ACF JSON
-                add_filter('acf/settings/load_json', function ($paths) use ($blockDir) {
-                    // Add the path
-                    $paths[] = "{$blockDir}/acf-json";
-
-                    return $paths;
-                });
             }
         }
     }
