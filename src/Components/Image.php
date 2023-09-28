@@ -14,7 +14,7 @@ class Image
      *
      * @return string
      */
-    public function makeResponsive(string $imgElement, array $imageMeta, int $attachmentID): string
+    public static function makeResponsive(string $imgElement, array $imageMeta, int $attachmentID): string
     {
         return wp_image_add_srcset_and_sizes($imgElement, $imageMeta, $attachmentID);
     }
