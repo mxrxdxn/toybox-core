@@ -110,7 +110,7 @@ class ImagesConvertCommand extends Command
         // Loop everything and recursively process the whole directory
         foreach (glob("{$path}/*") as $fileOrDir) {
             if (is_file($fileOrDir)) {
-                if (preg_match('#\.(png|jpg|jpeg)$#', $fileOrDir)) {
+                if (preg_match('#\.(png|jpg|jpeg)$#i', $fileOrDir)) {
                     $this->convertSingle($fileOrDir, $quality);
                 }
             } elseif (is_dir($fileOrDir)) {
