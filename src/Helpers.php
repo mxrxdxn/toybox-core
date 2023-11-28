@@ -323,13 +323,19 @@ if (! function_exists("lazy")) {
      *
      * @param string $blockName
      * @param array  $types
+     * @param bool   $isPreview
      *
      * @return string
      * @throws Exception
      */
-    function lazy(string $blockName, array $types = ["css", "js"]): string
+    function lazy(string $blockName, array $types = ["css", "js"], bool $isPreview = false): string
     {
         $attributes = "";
+
+        // If it's a preview, don't add the lazy load attribute.
+        if ($isPreview === true) {
+            return $attributes;
+        }
 
         foreach ($types as $type) {
             $path        = mix("/assets/{$type}/blocks/{$blockName}.{$type}");
