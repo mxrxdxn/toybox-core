@@ -78,4 +78,23 @@ class Blocks
             'data' => $data,
         ]);
     }
+
+    /**
+     * Parses blocks from a content string into HTML.
+     *
+     * @param string $content
+     *
+     * @return string
+     */
+    public static function parse(string $content): string
+    {
+        $blocks = parse_blocks($content);
+        $output = "";
+
+        foreach ($blocks as $block) {
+            $output .= render_block($block);
+        }
+
+        return $output;
+    }
 }
