@@ -80,6 +80,8 @@ class ACF
 
                 $paths = [$path];
             }
+
+            return $paths;
         }, 10, 2);
     }
 
