@@ -63,17 +63,24 @@ class ACF
         }, 10, 3);
 
         // Set the path
-        $name = "Block: {$blockName}";
+        add_filter("acf/json/save_paths", function ($paths, $post) {
+            // If we're saving a block's settings, save to the block itself.
+            if (
+                is_array($post["location"])
+                && array_key_exists(0, $post['location'])
+                && is_array($post["location"][0])
+                && array_key_exists(0, $post['location'][0])
+                && is_array($post["location"][0][0])
+                && array_key_exists("param", $post["location"][0][0])
+                && $post["location"][0][0]["param"] === "block"
+                && array_key_exists("value", $post["location"][0][0])
+            ) {
+                $blockName = str_ireplace("toybox/", "", $post["location"][0][0]["value"]);
+                $path      = get_theme_file_path() . "/blocks/{$blockName}/acf-json";
 
-        add_filter("acf/settings/save_json/name={$name}", function ($path) use ($blockName, $name) {
-            $path = get_theme_file_path() . '/blocks/' . slugify($blockName) . '/acf-json';
-
-            if (! file_exists($path)) {
-                mkdir($path, 0777, true);
+                $paths = [$path];
             }
-
-            return $path;
-        });
+        }, 10, 2);
     }
 
     /**
