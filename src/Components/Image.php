@@ -5,18 +5,32 @@ namespace Toybox\Core\Components;
 class Image
 {
     /**
-     * Adds the `srcset` and `sizes` attributes to a pre-existing img element. Allows the image to be selected based on
-     * screen real estate, so bandwidth can be saved.
+     * Return a responsive image from an attachment ID.
      *
-     * @param string $imgElement
-     * @param array  $imageMeta
      * @param int    $attachmentID
      *
      * @return string
      */
-    public static function makeResponsive(string $imgElement, array $imageMeta, int $attachmentID): string
+    public static function makeResponsive(int $attachmentID): string
     {
-        return wp_image_add_srcset_and_sizes($imgElement, $imageMeta, $attachmentID);
+        // Get the image
+        $fullURL = wp_get_attachment_image_url($attachmentID, "full");
+
+        // Get the sizes and srcset
+        $imageSizes  = wp_get_attachment_image_sizes($attachmentID, "full");
+        $imageSrcset = wp_get_attachment_image_srcset($attachmentID, "full");
+
+        // Return the responsive image
+        return wp_get_attachment_image(
+            $attachmentID,
+            "full",
+            false,
+            [
+                "class"  => "toybox-responsive",
+                "sizes"  => $imageSizes,
+                "srcset" => $imageSrcset,
+            ]
+        );
     }
 
     /**
@@ -28,9 +42,9 @@ class Image
      */
     public static function makeResponsiveFromACF(array $image): string
     {
-        $imgElement = "<img src=\"{$image['url']}\" alt=\"{$image['alt']}\">";
-        $imageMeta = wp_get_attachment_metadata($image['ID']);
+        // Get the image
+        $attachmentID = $image['ID'];
 
-        return static::makeResponsive($imgElement, $imageMeta, $image['ID']);
+        return static::makeResponsive($attachmentID);
     }
 }
