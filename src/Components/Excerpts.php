@@ -31,4 +31,27 @@ class Excerpts
             return $ending;
         });
     }
+
+    /**
+     * Fetches a trimmed excerpt from either the excerpt field or from the post content if an exceprt hasn't been
+     * created.
+     *
+     * @param \WP_Post|int|null $post
+     *
+     * @return string
+     */
+    public static function get(\WP_Post|int|null $post = null): string
+    {
+        if ($post === null) {
+            $post = $GLOBALS['post'];
+        }
+
+        if ($post instanceof \WP_Post) {
+            $excerpt = trim($post->post_excerpt);
+        } else {
+            $excerpt = trim(get_the_excerpt($post));
+        }
+
+        return wp_trim_excerpt($excerpt, $post);
+    }
 }
