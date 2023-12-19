@@ -35,7 +35,7 @@ class MakeBlockCommand extends Command
         $name = $input->getArgument("name");
 
         // Options
-        $withoutStyles = $input->getOption("without-styles");
+        $withoutStyles = $input->getOption("without-css");
         $withoutJS     = $input->getOption("without-js");
 
         // Slug the name
@@ -139,10 +139,10 @@ class MakeBlockCommand extends Command
 
         // Without Styles
         $this->addOption(
-            "without-styles",
+            "without-css",
             null,
             InputOption::VALUE_NONE,
-            "Don't include style assets"
+            "Don't include CSS assets"
         );
 
         // Without JS
