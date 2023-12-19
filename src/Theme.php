@@ -21,7 +21,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.9.4";
+    const VERSION = "2.9.5";
 
     /**
      * This directory.
@@ -31,16 +31,18 @@ class Theme
     /**
      * Boots the theme.
      *
+     * @param bool $disableCritical If set to true, the critical style will not be enqueued.
+     *
      * @return void
      * @throws Exception
      */
-    public static function boot(): void
+    public static function boot(bool $disableCritical = false): void
     {
         // Theme setup
         self::setup();
 
         // Enqueue styles and scripts
-        self::scripts();
+        self::scripts($disableCritical);
 
         // Register blocks
         self::registerBlocks();
@@ -145,13 +147,17 @@ class Theme
     /**
      * Enqueues any styles or scripts required by the theme.
      *
+     * @param bool $disableCritical If set to true, the critical style will not be enqueued.
+     *
      * @return void
      * @throws Exception
      */
-    private static function scripts(): void
+    private static function scripts(bool $disableCritical = false): void
     {
-        add_action("wp_enqueue_scripts", function () {
-            wp_enqueue_style('critical', mix('/assets/css/critical.css'));
+        add_action("wp_enqueue_scripts", function () use ($disableCritical) {
+            if ($disableCritical !== true) {
+                wp_enqueue_style('critical', mix('/assets/css/critical.css'));
+            }
         });
     }
 
