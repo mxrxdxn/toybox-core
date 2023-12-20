@@ -97,4 +97,18 @@ class Blocks
 
         return $output;
     }
+
+    /**
+     * Returns a formatted string for use inside the `allowedBlocks` attribute on an <InnerBlocks> element.
+     *
+     * @see https://developer.wordpress.org/block-editor/reference-guides/core-blocks/
+     *
+     * @param array $allowedBlocks An array of block names, including namespaces.
+     *
+     * @return string
+     */
+    public static function allowedBlocks(array $allowedBlocks): string
+    {
+        return esc_attr(wp_json_encode($allowedBlocks));
+    }
 }
