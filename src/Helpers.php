@@ -330,6 +330,16 @@ if (! function_exists("lazy")) {
      */
     function lazy(string $blockName, array $types = ["css", "js"], bool $isPreview = false): string
     {
+        // We can probably get slightly better performance if we remember which blocks have already been lazyloaded (if
+        // multiple of the same block exist on one page)
+        if (! array_key_exists("toybox_lazyloaded_blocks", $GLOBALS)) {
+            $GLOBALS["toybox_lazyloaded_blocks"] = [];
+        }
+
+        if (in_array($blockName, $GLOBALS["toybox_lazyloaded_blocks"])) {
+            return "";
+        }
+
         $attributes = "";
 
         // If it's a preview, don't add the lazy load attribute.
@@ -341,6 +351,9 @@ if (! function_exists("lazy")) {
             $path        = mix("/assets/{$type}/blocks/{$blockName}.{$type}");
             $attributes .= " data-lazy-{$type}=\"{$path}\"";
         }
+
+        // Add it to the global lazyload list
+        $GLOBALS["toybox_lazyloaded_blocks"][] = $blockName;
 
         return $attributes;
     }
