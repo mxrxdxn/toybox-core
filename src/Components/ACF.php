@@ -66,7 +66,8 @@ class ACF
         add_filter("acf/json/save_paths", function ($paths, $post) {
             // If we're saving a block's settings, save to the block itself.
             if (
-                is_array($post["location"])
+                array_key_exists("location", $post)
+                && is_array($post["location"])
                 && array_key_exists(0, $post['location'])
                 && is_array($post["location"][0])
                 && array_key_exists(0, $post['location'][0])
