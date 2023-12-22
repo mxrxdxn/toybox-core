@@ -129,6 +129,9 @@ class Theme
             }
         });
 
+        // Replace "Howdy" in the admin bar
+        AdminBar::replaceHowdy();
+
         // Deregister core block patterns
         Pattern::deregisterDefaultPatterns();
 
