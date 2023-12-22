@@ -21,7 +21,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.9.12";
+    const VERSION = "2.9.13";
 
     /**
      * This directory.
@@ -128,9 +128,6 @@ class Theme
                 return true;
             }
         });
-
-        // Replace "Howdy" in the admin bar
-        AdminBar::replaceHowdy();
 
         // Deregister core block patterns
         Pattern::deregisterDefaultPatterns();
