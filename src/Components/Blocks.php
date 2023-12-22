@@ -86,9 +86,9 @@ class Blocks
      *
      * @return string
      */
-    public static function parse(string $content): string
+    public static function renderContentString(string $content): string
     {
-        $blocks = parse_blocks($content);
+        $blocks = static::parse($content);
         $output = "";
 
         foreach ($blocks as $block) {
@@ -96,6 +96,18 @@ class Blocks
         }
 
         return $output;
+    }
+
+    /**
+     * Parses blocks from a content string.
+     *
+     * @param string $content
+     *
+     * @return array
+     */
+    public static function parse(string $content): array
+    {
+        return parse_blocks($content);
     }
 
     /**
