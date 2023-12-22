@@ -2,6 +2,8 @@
 
 namespace Toybox\Core\Components;
 
+use WP_Post;
+
 class Post
 {
     /**
