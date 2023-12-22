@@ -21,7 +21,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.9.14";
+    const VERSION = "2.10.0";
 
     /**
      * This directory.
@@ -38,6 +38,9 @@ class Theme
      */
     public static function boot(bool $disableCritical = false): void
     {
+        // Load snippets
+        self::loadSnippets();
+
         // Theme setup
         self::setup();
 
@@ -56,9 +59,6 @@ class Theme
 
         // Register shortcodes
         self::registerShortcodes();
-
-        // Load snippets
-        self::loadSnippets();
     }
 
     /**
@@ -69,6 +69,9 @@ class Theme
      */
     private static function setup(): void
     {
+        // Toybox setup start hook
+        do_action("toybox_setup_start");
+
         add_action("after_setup_theme", function () {
             // Enable custom logo
             add_theme_support('custom-logo');
@@ -142,6 +145,9 @@ class Theme
         AdminBar::setLogo();
         Login::maskErrors();
         Login::setLogo();
+
+        // Toybox setup complete hook
+        do_action("toybox_setup_complete");
     }
 
     /**

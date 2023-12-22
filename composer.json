@@ -25,6 +25,8 @@
         "doctrine/inflector": "^2.0",
         "rosell-dk/webp-convert": "^2.9",
         "nesbot/carbon": "^2.70",
-        "mobiledetect/mobiledetectlib": "^3.74"
+        "mobiledetect/mobiledetectlib": "^3.74",
+        "monolog/monolog": "^3.5",
+        "jjgrainger/query": "^0.2.0"
     }
 }
