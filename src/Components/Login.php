@@ -47,6 +47,6 @@ class Login
      */
     public static function isLoginPage(): bool
     {
-        return is_page("login");
+        return $GLOBALS['pagenow'] === "wp-login.php";
     }
 }
