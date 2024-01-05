@@ -39,4 +39,14 @@ class Login
             echo $output;
         });
     }
+
+    /**
+     * Return whether we're on the login page.
+     *
+     * @return bool
+     */
+    public static function isLoginPage(): bool
+    {
+        return is_page("login");
+    }
 }
