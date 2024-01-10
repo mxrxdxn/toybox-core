@@ -79,6 +79,16 @@ class ACF
                 $blockName = str_ireplace("toybox/", "", $post["location"][0][0]["value"]);
                 $path      = get_theme_file_path() . "/blocks/{$blockName}/acf-json";
 
+                // Fix directory separators
+                if (DIRECTORY_SEPARATOR === "\\") {
+                    $path = str_replace("/", "\\", $path);
+                }
+
+                // Create the directory
+                if (! is_dir($path)) {
+                    mkdir($path);
+                }
+
                 $paths = [$path];
             }
 
