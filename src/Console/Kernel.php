@@ -8,6 +8,7 @@ use Toybox\Core\Console\Commands\ExportBlockCommand;
 use Toybox\Core\Console\Commands\ImagesConvertCommand;
 use Toybox\Core\Console\Commands\InspireCommand;
 use Toybox\Core\Console\Commands\MakeBlockCommand;
+use Toybox\Core\Console\Commands\MakePatternCommand;
 use Toybox\Core\Console\Commands\MakePostTypeCommand;
 use Toybox\Core\Console\Commands\MakeShortcodeCommand;
 // use Toybox\Core\Console\Commands\MediaRegenerateCommand;
@@ -66,7 +67,7 @@ class Kernel
         $this->application->add(new MakeBlockCommand());
         $this->application->add(new MakePostTypeCommand());
         $this->application->add(new MakeShortcodeCommand());
-        // $this->application->add(new MediaRegenerateCommand());
+        $this->application->add(new MakePatternCommand());
     }
 
     /**

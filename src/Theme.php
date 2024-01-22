@@ -21,7 +21,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.10.5";
+    const VERSION = "2.11.0";
 
     /**
      * This directory.
