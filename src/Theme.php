@@ -21,7 +21,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.11.0";
+    const VERSION = "2.11.1";
 
     /**
      * This directory.
@@ -174,7 +174,7 @@ class Theme
      */
     private static function registerBlocks(): void
     {
-        $path = get_theme_file_path() . "/blocks";
+        $path = get_template_directory() . "/blocks";
 
         if (file_exists($path)) {
             foreach (glob("{$path}/*") as $blockDir) {
@@ -202,7 +202,7 @@ class Theme
     private static function registerPostTypes(): void
     {
         if (function_exists('register_post_type')) {
-            $path = get_theme_file_path() . "/post-types";
+            $path = get_template_directory() . "/post-types";
 
             if (file_exists($path)) {
                 foreach (glob("{$path}/*.php") as $postType) {
@@ -223,7 +223,7 @@ class Theme
     private static function registerShortcodes(): void
     {
         if (function_exists('add_shortcode')) {
-            $path = get_theme_file_path() . "/shortcodes";
+            $path = get_template_directory() . "/shortcodes";
 
             if (file_exists($path)) {
                 foreach (glob("{$path}/*") as $shortcodeDir) {
@@ -243,7 +243,7 @@ class Theme
      */
     private static function loadSnippets(): void
     {
-        $path = get_theme_file_path() . "/snippets";
+        $path = get_template_directory() . "/snippets";
 
         if (file_exists($path)) {
             foreach (glob("{$path}/*.php") as $snippet) {

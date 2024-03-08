@@ -31,7 +31,7 @@ class ACF
      */
     public static function loadBlockACFFields(): void
     {
-        $path = get_theme_file_path() . "/blocks";
+        $path = get_template_directory() . "/blocks";
 
         if (file_exists($path)) {
             foreach (glob("{$path}/*") as $blockDir) {
@@ -77,7 +77,7 @@ class ACF
                 && array_key_exists("value", $post["location"][0][0])
             ) {
                 $blockName = str_ireplace("toybox/", "", $post["location"][0][0]["value"]);
-                $path      = get_theme_file_path() . "/blocks/{$blockName}/acf-json";
+                $path      = get_template_directory() . "/blocks/{$blockName}/acf-json";
 
                 // Fix directory separators
                 if (DIRECTORY_SEPARATOR === "\\") {
@@ -103,7 +103,7 @@ class ACF
     public static function setPostTypeSavePath(): void
     {
         add_filter("acf/settings/save_json/type=acf-post-type", function ($path) {
-            $path = get_theme_file_path() . '/post-types';
+            $path = get_template_directory() . '/post-types';
 
             if (! file_exists($path)) {
                 mkdir($path, 0777, true);
@@ -119,7 +119,7 @@ class ACF
      */
     public static function setPostTypeLoadPath(): void
     {
-        $path = get_theme_file_path() . "/post-types";
+        $path = get_template_directory() . "/post-types";
 
         if (file_exists($path)) {
             // Load the ACF JSON
@@ -139,7 +139,7 @@ class ACF
     public static function setTaxonomySavePath(): void
     {
         add_filter("acf/settings/save_json/type=acf-taxonomy", function ($path) {
-            $path = get_theme_file_path() . '/taxonomies';
+            $path = get_template_directory() . '/taxonomies';
 
             if (! file_exists($path)) {
                 mkdir($path, 0777, true);
@@ -155,7 +155,7 @@ class ACF
      */
     public static function setTaxonomyLoadPath(): void
     {
-        $path = get_theme_file_path() . "/taxonomies";
+        $path = get_template_directory() . "/taxonomies";
 
         if (file_exists($path)) {
             // Load the ACF JSON
@@ -175,7 +175,7 @@ class ACF
     public static function setOptionsPageSavePath(): void
     {
         add_filter("acf/settings/save_json/type=acf-ui-options-page", function ($path) {
-            $path = get_theme_file_path() . '/options-pages';
+            $path = get_template_directory() . '/options-pages';
 
             if (! file_exists($path)) {
                 mkdir($path, 0777, true);
@@ -191,7 +191,7 @@ class ACF
      */
     public static function setOptionsPageLoadPath(): void
     {
-        $path = get_theme_file_path() . "/options-pages";
+        $path = get_template_directory() . "/options-pages";
 
         if (file_exists($path)) {
             // Load the ACF JSON
