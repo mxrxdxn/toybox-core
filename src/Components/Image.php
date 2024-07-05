@@ -49,4 +49,6 @@ class Image
 
         return static::makeResponsive($attachmentID, $classes);
     }
+
+
 }

@@ -222,4 +222,15 @@ class ACF
         static::setOptionsPageSavePath();
         static::setOptionsPageLoadPath();
     }
+
+    /**
+     * Enable the ACF shortcode.
+     * @return void
+     */
+    public static function enableShortcode(): void
+    {
+        add_action("acf/init", function () {
+            acf_update_setting("enable_shortcode", true);
+        });
+    }
 }

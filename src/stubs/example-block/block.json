@@ -8,7 +8,9 @@
   "keywords": [],
   "acf": {
     "mode": "preview",
-    "renderTemplate": "template.php"
+    "renderTemplate": "template.php",
+    "validate": true,
+    "usePostMeta": false
   },
   "align": "full"
 }

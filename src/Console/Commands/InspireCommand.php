@@ -29,8 +29,9 @@ class InspireCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $quotes = [
-            "\"I'm not saying I support Hitler, I'm just saying a dictatorship isn't a terrible idea.\" - Danny, 2022",
+            "\"What's a birthday?\" - Cash, every year since 2016",
             "\"Sounds like a you problem.\" - Ron, 2021",
+            "\"I'm not saying I support Hitler, I'm just saying a dictatorship isn't a terrible idea.\" - Danny, 2022",
             "\"She knows it's my couch.\" - Sam, 2022",
             "\"Sharing a bathroom with 4 other dudes isn't all bad.\" - Ben, 2022",
             "\"Don't tell me to clear my cache!\" - Em, 2022",

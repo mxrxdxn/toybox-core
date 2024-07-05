@@ -1,8 +1,10 @@
 <?php
 
-add_shortcode('example-shortcode', function ($attributes) {
+use Toybox\Core\Components\Shortcode;
+
+Shortcode::add('example-shortcode', function ($attributes) {
     // Build the attributes
-    $attributes = shortcode_atts([
+    $attributes = Shortcode::attributes([
         // 'key' => 'default value',
     ], $attributes, 'example-shortcode');
 

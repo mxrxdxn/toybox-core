@@ -6,6 +6,7 @@ use Exception;
 use Toybox\Core\Components\ACF;
 use Toybox\Core\Components\Admin;
 use Toybox\Core\Components\AdminBar;
+use Toybox\Core\Components\Customizer;
 use Toybox\Core\Components\Login;
 use Toybox\Core\Components\Misc;
 use Toybox\Core\Components\Pattern;
@@ -21,7 +22,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.11.1";
+    const VERSION = "2.12.0";
 
     /**
      * This directory.
@@ -59,6 +60,9 @@ class Theme
 
         // Register shortcodes
         self::registerShortcodes();
+
+        // Boot customizer sections
+        Customizer::boot();
     }
 
     /**

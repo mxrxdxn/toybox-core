@@ -2,6 +2,8 @@
 
 namespace Toybox\Core\Components;
 
+use Carbon\Carbon;
+
 class AdminBar
 {
     /**
@@ -45,6 +47,43 @@ class AdminBar
             OUTPUT;
 
             echo $output;
+        });
+    }
+
+    /**
+     * Replace the "Howdy" message in the WP admin area with a time-specific message.
+     *
+     * @return void
+     */
+    public static function replaceHowdy(): void
+    {
+        add_filter("admin_bar_menu", function ($adminBar) {
+            $now   = Carbon::now();
+
+            switch (true) {
+                case $now->hour >= 6 && $now->hour < 12:
+                    $howdy = "Good morning,";
+                    break;
+
+                case $now->hour >= 12 && $now->hour < 17:
+                    $howdy = "Good afternoon,";
+                    break;
+
+                case $now->hour >= 17:
+                    $howdy = "Good evening,";
+                    break;
+
+                default:
+                    $howdy = "Welcome,";
+                    break;
+            }
+
+            $myAccount = $adminBar->get_node('my-account');
+
+            $adminBar->add_node([
+                'id'    => 'my-account',
+                'title' => str_replace('Howdy,', $howdy, $myAccount->title),
+            ]);
         });
     }
 }
