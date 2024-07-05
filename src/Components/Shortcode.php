@@ -12,14 +12,14 @@ class Shortcode
      * will take precedence.
      *
      * @param string   $code     Shortcode tag to be searched in post content.
-     * @param Callable $callable The callback function to run when the shortcode is found.
+     * @param \Closure $callable The callback function to run when the shortcode is found.
      *                           Every shortcode callback is passed three parameters by default, including an array of
      *                           attributes ($atts), the shortcode content or null if not set ($content), and finally
      *                           the shortcode tag itself ($shortcode_tag), in that order.
      *
      * @return void
      */
-    public static function add(string $code, \callable $callable): void
+    public static function add(string $code, \Closure $callable): void
     {
         add_shortcode($code, $callable);
     }
