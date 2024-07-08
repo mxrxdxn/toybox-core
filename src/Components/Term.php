@@ -39,7 +39,7 @@ class Term
      *
      * @return bool
      */
-    public static function in(WP_Term $term, WP_Term|int $in)
+    public static function in(WP_Term $term, WP_Term|int $in): bool
     {
         // Get the parent
         $parent = $term->parent;
