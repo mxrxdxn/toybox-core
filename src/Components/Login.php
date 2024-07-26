@@ -28,6 +28,39 @@ class Login
 
             $output = <<<OUTPUT
                 <style>
+                    @media screen and (min-width: 1024px) {
+                        body {
+                            display: grid;
+                            grid-template-columns: repeat(12, minmax(0, 1fr));
+                        }
+                        
+                        #login {
+                            grid-column: 9 / span 3;
+                        }
+                    }
+                    
+                    body {
+                        background-image:    url({$stylesheetDir}/images/login-background.webp);
+                        background-size:     cover;
+                        background-position: center center;
+                    }
+                    
+                    .language-switcher {
+                        display: none;
+                    }
+                    
+                    #login {
+                        border: 1px solid #c3c4c7;
+                        background: #fff;
+                        box-shadow: 0 1px 3px rgba(0,0,0,.04);
+                    }
+                    
+                    .login form {
+                        background: unset;
+                        border: unset;
+                        box-shadow: unset;
+                    }
+                    
                     h1 a {
                         width: 300px !important;
                         background-image: url({$stylesheetDir}/images/admin-logo.svg)  !important;

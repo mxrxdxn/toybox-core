@@ -7,6 +7,18 @@ use Toybox\Core\Theme;
 class Admin
 {
     /**
+     * Boots the admin styles.
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        add_action("admin_head", function () {
+            include_once(Theme::CORE . "/stubs/AdminStyles.php");
+        });
+    }
+
+    /**
      * Hide the welcome panel from displaying.
      *
      * @return void

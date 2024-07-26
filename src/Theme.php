@@ -22,7 +22,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.12.3";
+    const VERSION = "2.12.4";
 
     /**
      * This directory.
@@ -63,6 +63,9 @@ class Theme
 
         // Boot customizer sections
         Customizer::boot();
+
+        // Boot admin styles
+        Admin::boot();
     }
 
     /**

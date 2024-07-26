@@ -37,4 +37,16 @@ class Post
         // Calculate the read time in minutes & round it up for a buffer.
         return ceil($wordCount / $wordsPerMinute);
     }
+
+    /**
+     * Renders a post into a string that can then be used inside a template file.
+     *
+     * @param int|object|WP_Post $post
+     *
+     * @return string
+     */
+    public static function render(int|object|\WP_Post $post): string
+    {
+        return Blocks::renderContentString(get_the_content(post: $post));
+    }
 }
