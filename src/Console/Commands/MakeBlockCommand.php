@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Toybox\Core\Components\WordPress;
+use Toybox\Core\Exceptions\CannotConnectToWordPressException;
 use Toybox\Core\Theme;
 
 class MakeBlockCommand extends Command
@@ -53,6 +55,10 @@ class MakeBlockCommand extends Command
         file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/init.php", $initFile);
 
         $jsonDeclaration = file_get_contents(Theme::CORE . "/stubs/example-block/block.json");
+
+        if ($withoutStyles) $jsonDeclaration = str_replace("\"style\": \"example-block-css\",", "", $jsonDeclaration);
+        if ($withoutJS)     $jsonDeclaration = str_replace("\"script\": \"example-block-js\",", "", $jsonDeclaration);
+
         $jsonDeclaration = str_replace('example-block', $sluggedName, $jsonDeclaration);
         $jsonDeclaration = str_replace('Example Block', $name, $jsonDeclaration);
         file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/block.json", $jsonDeclaration);
@@ -63,6 +69,28 @@ class MakeBlockCommand extends Command
         $templateFile = str_replace('block-example', "block-{$sluggedName}", $templateFile);
         $templateFile = str_replace('Example Block', $name, $templateFile);
         file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/template.php", $templateFile);
+
+        $previewFile = file_get_contents(Theme::CORE . "/stubs/example-block/preview.png");
+        file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/preview.png", $previewFile);
+
+        // Create acf-json folder
+        mkdir(TOYBOX_DIR . "/blocks/{$sluggedName}/acf-json");
+
+        // Copy over ACF settings
+        $acfSettings = file_get_contents(Theme::CORE . "/stubs/example-block/acf-json/example-block.json");
+        $acfSettings = str_replace('example-block', $sluggedName, $acfSettings);
+        $acfSettings = str_replace('Example Block', $name, $acfSettings);
+        $acfSettings = str_replace('group-id', uniqid("group_"), $acfSettings);
+        $acfSettings = str_replace('modified-timestamp', time(), $acfSettings);
+        file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/acf-json/block-{$sluggedName}.json", $acfSettings);
+
+        // Also import the field group
+        try {
+            WordPress::connect();
+            acf_import_field_group(json_decode(file_get_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/acf-json/block-{$sluggedName}.json"), true));
+        } catch (CannotConnectToWordPressException $e) {
+            $output->writeln("<error>Could not connect to WordPress to sync the field groups. Please do this manually in wp-admin -> ACF -> Field Groups.</error>");
+        }
 
         // Show success message
         $output->writeln("<info>Created block successfully.</info>");

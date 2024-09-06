@@ -6,10 +6,15 @@ use Exception;
 use Toybox\Core\Components\ACF;
 use Toybox\Core\Components\Admin;
 use Toybox\Core\Components\AdminBar;
+use Toybox\Core\Components\Blocks;
 use Toybox\Core\Components\Customizer;
 use Toybox\Core\Components\Login;
 use Toybox\Core\Components\Misc;
 use Toybox\Core\Components\Pattern;
+use Toybox\Core\Components\PostType;
+use Toybox\Core\Components\Styles;
+use Toybox\Core\Components\Shortcode;
+use Toybox\Core\Components\Snippets;
 use Toybox\Core\Components\User;
 
 // Disable file editing from wp-admin
@@ -22,7 +27,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "2.12.4";
+    const VERSION = "2.14.0";
 
     /**
      * This directory.
@@ -40,26 +45,26 @@ class Theme
     public static function boot(bool $disableCritical = false): void
     {
         // Load snippets
-        self::loadSnippets();
+        Snippets::boot();
 
         // Theme setup
         self::setup();
 
         // Enqueue styles and scripts
-        self::scripts($disableCritical);
+        Styles::boot($disableCritical);
 
         // Register blocks
-        self::registerBlocks();
+        Blocks::boot();
 
         // Register post types
-        self::registerPostTypes();
+        PostType::boot();
 
         // Register ACF fields
         ACF::loadBlockACFFields();
         ACF::setPaths();
 
         // Register shortcodes
-        self::registerShortcodes();
+        Shortcode::boot();
 
         // Boot customizer sections
         Customizer::boot();
@@ -139,6 +144,11 @@ class Theme
             }
         });
 
+        // Include the style vars inside wp_head().
+        add_action("wp_head", function () {
+            include_once(Theme::CORE . "/stubs/StyleVars.php");
+        });
+
         // Deregister core block patterns
         Pattern::deregisterDefaultPatterns();
 
@@ -150,112 +160,9 @@ class Theme
         Admin::disableUpdateNag();
         Admin::setFooterText();
         AdminBar::setLogo();
-        Login::maskErrors();
-        Login::setLogo();
+        Login::boot();
 
         // Toybox setup complete hook
         do_action("toybox_setup_complete");
-    }
-
-    /**
-     * Enqueues any styles or scripts required by the theme.
-     *
-     * @param bool $disableCritical If set to true, the critical style will not be enqueued.
-     *
-     * @return void
-     * @throws Exception
-     */
-    private static function scripts(bool $disableCritical = false): void
-    {
-        add_action("wp_enqueue_scripts", function () use ($disableCritical) {
-            if ($disableCritical !== true) {
-                wp_enqueue_style('critical', mix('/assets/css/critical.css'));
-            }
-        });
-    }
-
-    /**
-     * Autoload blocks from the /blocks directory.
-     *
-     * @return void
-     */
-    private static function registerBlocks(): void
-    {
-        $path = get_template_directory() . "/blocks";
-
-        if (file_exists($path)) {
-            foreach (glob("{$path}/*") as $blockDir) {
-                // Load the block
-                add_action("init", function () use ($blockDir) {
-                    // We use a file existence check here as we may be supporting newer block types.
-                    if (file_exists("{$blockDir}/block.json")) {
-                        require_once("{$blockDir}/init.php");
-                    } else {
-                        // Perform an additional check to ensure we have ACF installed.
-                        if (function_exists('acf_register_block_type')) {
-                            require_once("{$blockDir}/init.php");
-                        }
-                    }
-                }, 5);
-            }
-        }
-    }
-
-    /**
-     * Autoload custom post types from the /post-types directory.
-     *
-     * @return void
-     */
-    private static function registerPostTypes(): void
-    {
-        if (function_exists('register_post_type')) {
-            $path = get_template_directory() . "/post-types";
-
-            if (file_exists($path)) {
-                foreach (glob("{$path}/*.php") as $postType) {
-                    // Load the post type
-                    add_action("init", function () use ($postType) {
-                        require_once("{$postType}");
-                    }, 0);
-                }
-            }
-        }
-    }
-
-    /**
-     * Autoload shortcodes from the /shortcodes directory.
-     *
-     * @return void
-     */
-    private static function registerShortcodes(): void
-    {
-        if (function_exists('add_shortcode')) {
-            $path = get_template_directory() . "/shortcodes";
-
-            if (file_exists($path)) {
-                foreach (glob("{$path}/*") as $shortcodeDir) {
-                    // Load the shortcode
-                    add_action("init", function () use ($shortcodeDir) {
-                        require_once("{$shortcodeDir}/init.php");
-                    });
-                }
-            }
-        }
-    }
-
-    /**
-     * Allows loading of "snippets" - small bits of sharable code that can be dropped into any Toybox installation.
-     *
-     * @return void
-     */
-    private static function loadSnippets(): void
-    {
-        $path = get_template_directory() . "/snippets";
-
-        if (file_exists($path)) {
-            foreach (glob("{$path}/*.php") as $snippet) {
-                require_once($snippet);
-            }
-        }
     }
 }

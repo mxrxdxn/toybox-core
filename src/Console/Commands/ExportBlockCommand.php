@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Toybox\Core\Console\Kernel;
+use Toybox\Core\Components\WordPress;
 
 class ExportBlockCommand extends Command
 {
@@ -46,7 +46,7 @@ class ExportBlockCommand extends Command
         $location   = $input->getOption("location");
 
         // Connect to WordPress
-        Kernel::connectToWordpress($domain);
+        WordPress::connect($domain);
 
         // Multisite also requires a "domain" option - if the domain isn't set, throw an error
         if (is_multisite() && $domain === null) {

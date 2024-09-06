@@ -10,14 +10,25 @@ class Log
 {
     public Logger $log;
 
-    public function __construct(string $channel, string $filename, int|Level|string $level = Level::Debug)
+    public function __construct(string $filename, string $channel = "logs", int|Level|string $level = Level::Debug)
     {
-        if (! is_dir(WP_CONTENT_DIR . "/logs/toybox")) {
-            wp_mkdir_p(WP_CONTENT_DIR . "/logs/toybox");
+        if (defined("WP_CONTENT_DIR")) {
+            $path = WP_CONTENT_DIR . "/logs/toybox";
+        } else {
+            $path = "/tmp";
+        }
+
+        if (! is_dir($path)) {
+            wp_mkdir_p($path);
+        }
+
+        // Append .log if necessary
+        if (! str_ends_with(strtolower($filename), ".log")) {
+            $filename .= ".log";
         }
 
         $this->log = new Logger($channel);
-        $this->log->pushHandler(new StreamHandler(WP_CONTENT_DIR . "/logs/toybox/{$filename}", $level));
+        $this->log->pushHandler(new StreamHandler($path . "/{$filename}", $level));
     }
 
     /**

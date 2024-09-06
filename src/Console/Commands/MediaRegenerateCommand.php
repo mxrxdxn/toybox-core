@@ -5,7 +5,8 @@ namespace Toybox\Core\Console\Commands;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Toybox\Core\Console\Kernel;
+use Toybox\Core\Components\WordPress;
+use Toybox\Core\Exceptions\CannotConnectToWordPressException;
 
 class MediaRegenerateCommand extends Command
 {
@@ -22,15 +23,16 @@ class MediaRegenerateCommand extends Command
     /**
      * Execute the command.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int
+     * @throws CannotConnectToWordPressException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Connect to WordPress
-        Kernel::connectToWordpress();
+        WordPress::connect();
 
         // Make sure we can resize images (check to see if GD/Imagick is available).
         if (! wp_image_editor_supports(['methods' => ['resize']])) {

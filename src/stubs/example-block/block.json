@@ -3,6 +3,7 @@
   "title": "Example Block",
   "description": "An example block.",
   "style": "example-block-css",
+  "script": "example-block-js",
   "category": "common",
   "icon": "align-wide",
   "keywords": [],
@@ -11,6 +12,14 @@
     "renderTemplate": "template.php",
     "validate": true,
     "usePostMeta": false
+  },
+  "example": {
+    "attributes": {
+      "mode": "preview",
+      "data": {
+        "is_example": true
+      }
+    }
   },
   "align": "full"
 }

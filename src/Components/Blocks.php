@@ -5,6 +5,33 @@ namespace Toybox\Core\Components;
 class Blocks
 {
     /**
+     * Autoload blocks from the /blocks directory.
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        $path = get_template_directory() . "/blocks";
+
+        if (file_exists($path)) {
+            foreach (glob("{$path}/*") as $blockDir) {
+                // Load the block
+                add_action("init", function () use ($blockDir) {
+                    // We use a file existence check here as we may be supporting newer block types.
+                    if (file_exists("{$blockDir}/block.json")) {
+                        require_once("{$blockDir}/init.php");
+                    } else {
+                        // Perform an additional check to ensure we have ACF installed.
+                        if (function_exists('acf_register_block_type')) {
+                            require_once("{$blockDir}/init.php");
+                        }
+                    }
+                }, 5);
+            }
+        }
+    }
+
+    /**
      * Registers block assets for use in WordPress.
      *
      * @param array $assets
@@ -122,5 +149,30 @@ class Blocks
     public static function allowedBlocks(array $allowedBlocks): string
     {
         return esc_attr(wp_json_encode($allowedBlocks));
+    }
+
+    /**
+     * Detect if the block is in preview mode or not.
+     *
+     * @param array $block
+     *
+     * @return bool
+     */
+    public static function isPreview(array $block): bool
+    {
+        return ! empty($block['data']['is_example']);
+    }
+
+    /**
+     * Render a block preview.
+     *
+     * @param array  $block The block settings.
+     * @param string $path  The path to the preview image.
+     *
+     * @return string
+     */
+    public static function preview(array $block, string $path): string
+    {
+        return "<figure><img style=\"width: 100%; height: 100%; object-fit: contain;\" src=\"{$path}\" alt=\"preview\" /></figure>";
     }
 }

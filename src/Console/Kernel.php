@@ -11,7 +11,6 @@ use Toybox\Core\Console\Commands\MakeBlockCommand;
 use Toybox\Core\Console\Commands\MakePatternCommand;
 use Toybox\Core\Console\Commands\MakePostTypeCommand;
 use Toybox\Core\Console\Commands\MakeShortcodeCommand;
-// use Toybox\Core\Console\Commands\MediaRegenerateCommand;
 use Toybox\Core\Theme;
 
 // Directory separator string
@@ -68,39 +67,5 @@ class Kernel
         $this->application->add(new MakePostTypeCommand());
         $this->application->add(new MakeShortcodeCommand());
         $this->application->add(new MakePatternCommand());
-    }
-
-    /**
-     * On Bedrock installations, the path to wp-load.php is different - this
-     * function figures out if we're on a Bedrock installation.
-     *
-     * @return bool
-     */
-    private static function isBedrock(): bool
-    {
-        return file_exists(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp" . DS . "");
-    }
-
-    /**
-     * Connect the command line to WordPress when required.
-     *
-     * @param string|null $domain
-     *
-     * @return void
-     * @throws Exception
-     */
-    public static function connectToWordpress(string|null $domain = null): void
-    {
-        $_SERVER['HTTP_HOST'] = $domain;
-
-        // Connect to WordPress
-        if (self::isBedrock()) {
-            require_once(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp" . DS . "wp-load.php");
-        } else {
-            require_once(__DIR__ . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . ".." . DS . "wp-load.php");
-        }
-
-        // Boot the theme
-        Theme::boot();
     }
 }

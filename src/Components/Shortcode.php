@@ -5,6 +5,27 @@ namespace Toybox\Core\Components;
 class Shortcode
 {
     /**
+     * Autoload shortcodes from the /shortcodes directory.
+     *
+     * @return void
+     */
+    public static function boot(): void
+    {
+        if (function_exists('add_shortcode')) {
+            $path = get_template_directory() . "/shortcodes";
+
+            if (file_exists($path)) {
+                foreach (glob("{$path}/*") as $shortcodeDir) {
+                    // Load the shortcode
+                    add_action("init", function () use ($shortcodeDir) {
+                        require_once("{$shortcodeDir}/init.php");
+                    });
+                }
+            }
+        }
+    }
+
+    /**
      * Shorthand function for `add_shortcode()`.
      *
      * Care should be taken through prefixing or other means to ensure that the shortcode tag being added is unique and

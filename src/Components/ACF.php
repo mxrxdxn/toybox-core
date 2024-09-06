@@ -49,11 +49,11 @@ class ACF
     /**
      * Sets the save point for a block.
      *
-     * @param string $blockName
+     * @param string $blockName DEPRECATED - The name of the block.
      *
      * @return void
      */
-    public static function setSavePoint(string $blockName): void
+    public static function setSavePoint(string $blockName = ""): void
     {
         // Set the filename
         add_filter('acf/json/save_file_name', function ($filename, $post, $load_path) {
@@ -77,7 +77,7 @@ class ACF
                 && array_key_exists("value", $post["location"][0][0])
             ) {
                 $blockName = str_ireplace("toybox/", "", $post["location"][0][0]["value"]);
-                $path      = get_template_directory() . "/blocks/{$blockName}/acf-json";
+                $path      = Path::templateDirectory() . "/blocks/{$blockName}/acf-json";
 
                 // Fix directory separators
                 if (DIRECTORY_SEPARATOR === "\\") {

@@ -14,7 +14,7 @@ class Admin
     public static function boot(): void
     {
         add_action("admin_head", function () {
-            include_once(Theme::CORE . "/stubs/AdminStyles.php");
+            include_once(Theme::CORE . "/stubs/StyleVars.php");
         });
     }
 
