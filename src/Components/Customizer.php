@@ -147,6 +147,8 @@ class Customizer
             self::setting("toybox_headings_h{$i}_size_medium", "Font Size (REM) - Medium", "The size of H{$i} text in REM units.", "text", $sizeMedium, "toybox_headings_h{$i}");
             self::setting("toybox_headings_h{$i}_size_small", "Font Size (REM) - Small", "The size of H{$i} text in REM units.", "text", $sizeSmall, "toybox_headings_h{$i}");
             self::setting("toybox_headings_h{$i}_weight", "Font Weight", "The weight of H{$i} text.", "number", $weight, "toybox_headings_h{$i}");
+            self::colorPicker("toybox_headings_h{$i}_color_primary", "Primary Font Colour", "The primary colour for H{$i} text.", "#000000", "toybox_headings_h{$i}");
+            self::colorPicker("toybox_headings_h{$i}_color_secondary", "Secondary Font Colour", "The secondary colour for H{$i} text.", "#000000", "toybox_headings_h{$i}");
         }
 
         // Title/Body Text
@@ -160,6 +162,8 @@ class Customizer
             self::setting("toybox_text_settings_{$text}_size_medium", "Font Size (REM) - Medium", "The size of {$text} text in REM units.", "text", 1, "toybox_text_settings_{$text}");
             self::setting("toybox_text_settings_{$text}_size_small", "Font Size (REM) - Small", "The size of {$text} text in REM units.", "text", 1, "toybox_text_settings_{$text}");
             self::setting("toybox_text_settings_{$text}_weight", "Font Weight", "The weight of {$text} text.", "number", 400, "toybox_text_settings_{$text}");
+            self::colorPicker("toybox_text_settings_{$text}_color_primary", "Primary Font Colour", "The primary colour for {$text} text.", "#000000", "toybox_text_settings_{$text}");
+            self::colorPicker("toybox_text_settings_{$text}_color_secondary", "Secondary Font Colour", "The secondary colour for {$text} text.", "#000000", "toybox_text_settings_{$text}");
         }
 
         // Other
