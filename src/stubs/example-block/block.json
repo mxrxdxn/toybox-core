@@ -2,6 +2,7 @@
   "name": "toybox/example-block",
   "title": "Example Block",
   "description": "An example block.",
+  "version": "0.0.1",
   "style": "example-block-css",
   "script": "example-block-js",
   "category": "common",
