@@ -70,7 +70,7 @@ class Term
      *
      * @return array
      */
-    public function for(int|\WP_Post|null $post = null, string|array|null $taxonomy = null): array
+    public static function for(int|\WP_Post|null $post = null, string|array|null $taxonomy = null): array
     {
         // Set the post object if not already set
         if ($post === null) {
