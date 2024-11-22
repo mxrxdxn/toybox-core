@@ -61,4 +61,58 @@ class Term
 
         return $term->term_id === $in;
     }
+
+    /**
+     * Retrieves a list of all terms attached to a given post for a given taxonomy.
+     *
+     * @param int|\WP_Post|null $post
+     * @param string|array|null $taxonomy
+     *
+     * @return array
+     */
+    public function for(int|\WP_Post|null $post = null, string|array|null $taxonomy = null): array
+    {
+        // Set the post object if not already set
+        if ($post === null) {
+            $post = get_the_ID();
+        }
+
+        // If we have a taxonomy string, use it
+        if (is_string($taxonomy)) {
+            $terms = get_the_terms($post, $taxonomy);
+
+            if ($terms === false) {
+                return [];
+            }
+
+            return $terms;
+        }
+
+        // Set an output array
+        $allTerms = [];
+
+        // If $taxonomy is null, build an array of all taxonomies
+        if (is_null($taxonomy)) {
+            $taxonomy = [];
+
+            $taxonomies = get_taxonomies([], "objects");
+
+            foreach ($taxonomies as $tax) {
+                $taxonomy[] = $tax->name;
+            }
+        }
+
+        // Loop all the taxonomies for their terms
+        if (is_array($taxonomy)) {
+            foreach ($taxonomy as $tax) {
+                $terms = get_the_terms($post, $tax);
+
+                if (is_array($terms)) {
+                    $allTerms = array_merge($allTerms, $terms);
+                }
+            }
+        }
+
+        return $allTerms;
+    }
 }
