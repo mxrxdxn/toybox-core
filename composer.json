@@ -26,7 +26,8 @@
         "rosell-dk/webp-convert": "^2.9",
         "nesbot/carbon": "^2.70",
         "mobiledetect/mobiledetectlib": "^3.74",
-        "monolog/monolog": "3.5",
-        "jjgrainger/query": "^0.2.0"
+        "monolog/monolog": "^2",
+        "jjgrainger/query": "^0.2.0",
+        "psr/log": "1.1.4"
     }
 }
