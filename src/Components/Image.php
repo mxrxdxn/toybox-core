@@ -16,12 +16,9 @@ class Image
      */
     public static function makeResponsive(int $attachmentID, array $classes = ["toybox-responsive"], string $size = "full"): string
     {
-        // Get the image
-        $fullURL = wp_get_attachment_image_url($attachmentID, $size);
-
         // Get the sizes and srcset
-        $imageSizes  = wp_get_attachment_image_sizes($attachmentID, $size);
-        $imageSrcset = wp_get_attachment_image_srcset($attachmentID, $size);
+        $imageSizes  = wp_get_attachment_image_sizes($attachmentID, "full");
+        $imageSrcset = wp_get_attachment_image_srcset($attachmentID, "full");
 
         // Return the responsive image
         return wp_get_attachment_image(
