@@ -5,26 +5,28 @@ namespace Toybox\Core\Components;
 class Image
 {
     /**
-     * Return a responsive image from an attachment ID.
+     * Generates a responsive image tag with `srcset` and `sizes` attributes
+     * for a given WordPress attachment ID.
      *
-     * @param int   $attachmentID
-     * @param array $classes
+     * @param int    $attachmentID The ID of the WordPress media attachment.
+     * @param array  $classes      Classes to apply to the image tag.
+     * @param string $size         The image size to fetch (e.g., "thumbnail", "medium", "full").
      *
-     * @return string
+     * @return string The responsive image HTML tag.
      */
-    public static function makeResponsive(int $attachmentID, array $classes = ["toybox-responsive"]): string
+    public static function makeResponsive(int $attachmentID, array $classes = ["toybox-responsive"], string $size = "full"): string
     {
         // Get the image
-        $fullURL = wp_get_attachment_image_url($attachmentID, "full");
+        $fullURL = wp_get_attachment_image_url($attachmentID, $size);
 
         // Get the sizes and srcset
-        $imageSizes  = wp_get_attachment_image_sizes($attachmentID, "full");
-        $imageSrcset = wp_get_attachment_image_srcset($attachmentID, "full");
+        $imageSizes  = wp_get_attachment_image_sizes($attachmentID, $size);
+        $imageSrcset = wp_get_attachment_image_srcset($attachmentID, $size);
 
         // Return the responsive image
         return wp_get_attachment_image(
             $attachmentID,
-            "full",
+            $size,
             false,
             [
                 "class"  => implode(" ", $classes),
@@ -35,19 +37,20 @@ class Image
     }
 
     /**
-     * Adds the `srcset` and `sizes` attributes to an ACF image element.
+     * Generates a responsive image markup based on image data retrieved from ACF (Advanced Custom Fields).
      *
-     * @param array $image   The image array returned from ACF.
-     * @param array $classes Classes to apply to the image tag.
+     * @param array  $image   The image array from ACF, expected to include an 'ID' key.
+     * @param array  $classes An array of CSS classes to apply to the image. Defaults to ["toybox-responsive"].
+     * @param string $size    The desired image size. Defaults to "full".
      *
-     * @return string
+     * @return string The responsive image HTML markup.
      */
-    public static function makeResponsiveFromACF(array $image, array $classes = ["toybox-responsive"]): string
+    public static function makeResponsiveFromACF(array $image, array $classes = ["toybox-responsive"], string $size = "full"): string
     {
         // Get the image
         $attachmentID = $image['ID'];
 
-        return static::makeResponsive($attachmentID, $classes);
+        return static::makeResponsive($attachmentID, $classes, $size);
     }
 
 
