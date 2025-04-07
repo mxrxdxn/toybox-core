@@ -42,8 +42,12 @@ class Image
      *
      * @return string The responsive image HTML markup.
      */
-    public static function makeResponsiveFromACF(array $image, array $classes = ["toybox-responsive"], string $size = "full"): string
+    public static function makeResponsiveFromACF(array|false $image, array $classes = ["toybox-responsive"], string $size = "full"): string
     {
+        if ($image === false) {
+            return "";
+        }
+
         // Get the image
         $attachmentID = $image['ID'];
 
