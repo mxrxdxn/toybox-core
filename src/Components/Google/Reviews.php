@@ -2,6 +2,8 @@
 
 namespace Toybox\Core\Components\Google;
 
+use DateTime;
+
 class Reviews
 {
     /**
