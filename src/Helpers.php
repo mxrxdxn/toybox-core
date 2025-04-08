@@ -319,13 +319,14 @@ if (! function_exists('now')) {
 
 if (! function_exists("lazy")) {
     /**
-     * Return the attributes for lazy loading resources.
+     * Generates lazy-loading attributes for block assets.
      *
-     * @param string $blockName
-     * @param array  $types
-     * @param bool   $isPreview
+     * @param string   $blockName The name of the block to generate attributes for. Should be the same as the base class
+     *                            name, minus `block-`.
+     * @param string[] $types     The types of assets to lazy-load (e.g., "css", "js"). Defaults to ["css", "js"].
+     * @param bool     $isPreview Whether the block is being rendered in a preview mode.
      *
-     * @return string
+     * @return string Lazy-loading attributes for the specified block assets.
      * @throws Exception
      */
     function lazy(string $blockName, array $types = ["css", "js"], bool $isPreview = false): string
@@ -348,7 +349,7 @@ if (! function_exists("lazy")) {
         }
 
         foreach ($types as $type) {
-            $path        = mix("/assets/{$type}/blocks/{$blockName}.{$type}");
+            $path       = mix("/assets/{$type}/blocks/{$blockName}.{$type}");
             $attributes .= " data-lazy-{$type}=\"{$path}\"";
         }
 
@@ -356,5 +357,30 @@ if (! function_exists("lazy")) {
         $GLOBALS["toybox_lazyloaded_blocks"][] = $blockName;
 
         return $attributes;
+    }
+}
+
+if (! function_exists("array_merge_recursive_distinct")) {
+    /**
+     * Recursively merges two arrays, ensuring that duplicate keys are handled distinctly.
+     *
+     * @param array $array1 The first array to merge.
+     * @param array $array2 The second array to merge into the first.
+     *
+     * @return array The resulting array after merging the two arrays distinctly.
+     */
+    function array_merge_recursive_distinct(array &$array1, array &$array2): array
+    {
+        $merged = $array1;
+
+        foreach ($array2 as $key => &$value) {
+            if (is_array($value) && isset ($merged [$key]) && is_array($merged [$key])) {
+                $merged [$key] = array_merge_recursive_distinct($merged [$key], $value);
+            } else {
+                $merged [$key] = $value;
+            }
+        }
+
+        return $merged;
     }
 }
