@@ -3,6 +3,7 @@
 namespace Toybox\Core\Components;
 
 use Carbon\Carbon;
+use Closure;
 
 class Transient
 {
@@ -47,5 +48,27 @@ class Transient
     public static function delete(string $name): bool
     {
         return delete_transient($name);
+    }
+
+    /**
+     * Retrieves a value from the cache or computes and stores it if not already cached.
+     *
+     * @param string     $name       The key under which the value is stored.
+     * @param Closure   $callback   The callback to compute and return the value if not already cached.
+     * @param int|Carbon $expiration The expiration time for the cached value.
+     *
+     * @return mixed The cached or computed value.
+     */
+    public static function remember(string $name, Closure $callback, int|Carbon $expiration): mixed
+    {
+        $data = static::get($name);
+
+        if ($data === false) {
+            $data = $callback();
+
+            static::set($name, $data, $expiration);
+        }
+
+        return $data;
     }
 }
