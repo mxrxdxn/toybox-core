@@ -2,6 +2,8 @@
 
 namespace Toybox\Core\Components;
 
+use WP_Post;
+
 class Image
 {
     /**
@@ -58,5 +60,25 @@ class Image
         return static::makeResponsive($attachmentID, $classes, $size, $attributes);
     }
 
+    /**
+     * Generates a responsive image HTML string from the thumbnail of a given post.
+     *
+     * @param WP_Post|int|null $post       The post object, ID, or null from which the thumbnail is retrieved.
+     * @param array            $classes    An array of CSS classes to be applied to the responsive image. Defaults to ["toybox-responsive"].
+     * @param string           $size       The size of the thumbnail image. Defaults to "full".
+     * @param array            $attributes Additional HTML attributes to include in the image tag. Defaults to an empty array.
+     *
+     * @return string The generated responsive image HTML string. Returns an empty string if no thumbnail is found.
+     */
+    public static function makeResponsiveFromThumbnail(WP_Post|int|null $post, array $classes = ["toybox-responsive"], string $size = "full", array $attributes = []): string
+    {
+        $thumbnailID = get_post_thumbnail_id($post);
 
+        if ($thumbnailID === false) {
+            return "";
+        }
+
+        // Generate the responsive image
+        return static::makeResponsive($thumbnailID, $classes, $size, $attributes);
+    }
 }
