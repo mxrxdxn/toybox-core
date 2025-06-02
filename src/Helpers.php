@@ -319,25 +319,24 @@ if (! function_exists('now')) {
 
 if (! function_exists("lazy")) {
     /**
-     * Generates lazy-loading attributes for block assets.
+     * Generates lazy load attributes for a specified block with support for multiple asset types,
+     * and manages loaded blocks globally to prevent duplicates.
      *
-     * @param string   $blockName The name of the block to generate attributes for. Should be the same as the base class
-     *                            name, minus `block-`.
-     * @param string[] $types     The types of assets to lazy-load (e.g., "css", "js"). Defaults to ["css", "js"].
-     * @param bool     $isPreview Whether the block is being rendered in a preview mode.
+     * @param string   $blockName     The name of the block for which lazy attributes should be generated.
+     * @param string[] $types         Array of asset types (e.g., "css", "js") to include.
+     * @param bool     $isPreview     Whether the block is being rendered as a preview.
+     * @param bool     $skipLoadCheck Whether to skip the check for previously loaded blocks.
      *
-     * @return string Lazy-loading attributes for the specified block assets.
+     * @return string Lazy load attributes as a string for use in HTML elements.
      * @throws Exception
      */
-    function lazy(string $blockName, array $types = ["css", "js"], bool $isPreview = false): string
+    function lazy(string $blockName, array $types = ["css", "js"], bool $isPreview = false, bool $skipLoadCheck = false): string
     {
-        // We can probably get slightly better performance if we remember which blocks have already been lazyloaded (if
-        // multiple of the same block exist on one page)
         if (! array_key_exists("toybox_lazyloaded_blocks", $GLOBALS)) {
             $GLOBALS["toybox_lazyloaded_blocks"] = [];
         }
 
-        if (in_array($blockName, $GLOBALS["toybox_lazyloaded_blocks"])) {
+        if ($skipLoadCheck === false && in_array($blockName, $GLOBALS["toybox_lazyloaded_blocks"])) {
             return "";
         }
 
