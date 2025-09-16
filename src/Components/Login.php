@@ -21,12 +21,13 @@ class Login
                 <style>
                     @media screen and (min-width: 1024px) {
                         body {
-                            display: grid;
-                            grid-template-columns: repeat(12, minmax(0, 1fr));
+                            display:         flex;
+                            align-items:     center;
+                            justify-content: center;
                         }
                         
                         #login {
-                            grid-column: 9 / span 3;
+                            padding-top: 2rem;
                         }
                     }
                     
@@ -41,6 +42,7 @@ class Login
                     }
                     
                     #login {
+                        margin-right: 10vw;
                         border: 1px solid #c3c4c7;
                         background: #fff;
                         box-shadow: 0 1px 3px rgba(0,0,0,.04);
