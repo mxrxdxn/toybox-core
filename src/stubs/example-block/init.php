@@ -5,11 +5,11 @@ use Toybox\Core\Components\Blocks;
 
 $assets = [
     "css" => [
-        "example-block-css" => file_exists(\Toybox\Core\Components\Path::themeFile("/assets/css/blocks/example-block.css")) ? mix("/assets/css/blocks/example-block.css") : false,
+        "example-block-css" => vite("blocks/example-block/resources/css/example-block.css"),
     ],
 
     "js" => [
-        "example-block-js" => file_exists(\Toybox\Core\Components\Path::themeFile("/assets/js/blocks/example-block.js")) ? mix("/assets/js/blocks/example-block.js") : false,
+        "example-block-js" => vite("blocks/example-block/resources/js/example-block.js"),
     ],
 ];
 

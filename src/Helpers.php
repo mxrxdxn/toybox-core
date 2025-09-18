@@ -4,39 +4,47 @@ use Carbon\Carbon;
 use Doctrine\Inflector\InflectorFactory;
 
 /**
- * The path to the mix-manifest.json file.
+ * The asset build path.
  */
-const MIX_MANIFEST = TOYBOX_DIR . "/mix-manifest.json";
+const BUILD_PATH = TOYBOX_DIR . "/public/build";
 
 /**
- * Fetch a versioned asset URL from the mix manifest file.
+ * The path to the manifest.json file.
+ */
+const MANIFEST = BUILD_PATH . "/manifest.json";
+
+/**
+ * Fetch a versioned asset URL from the manifest file.
  *
- * @param string      $fileName           Path of the file to load, relative to the theme base URI.
- * @param string|null $manifestPath       Path to the mix-manifest.json file.
- * @param bool        $includeCacheBuster Whether to include the cache buster string.
+ * @param string      $fileName     Path of the file to load, relative to the theme base URI.
+ * @param string|null $manifestPath Path to the mix-manifest.json file.
  *
  * @return string
  * @throws Exception
  */
-function mix(string $fileName, string|null $manifestPath = null, bool $includeCacheBuster = true): string
+function vite(string $fileName, string|null $manifestPath = null): string
 {
-    // Fetch the manifest
-    if (! empty($manifestPath)) {
-        $manifest = json_decode(file_get_contents($manifestPath), true);
+    // Are we in "hot" mode?
+    $inHotReloadMode = file_exists(BUILD_PATH . "/hot");
+
+    if ($inHotReloadMode === true) {
+        // return the assets
     } else {
-        $manifest = json_decode(file_get_contents(MIX_MANIFEST), true);
-    }
+        // Fetch the manifest
+        if (! empty($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+        } else {
+            $manifest = json_decode(file_get_contents(MANIFEST), true);
+        }
 
-    // If the file can't be found, throw an exception
-    if (! array_key_exists($fileName, $manifest)) {
-        throw new Exception("Could not find {$fileName} in manifest. Try rebuilding your assets with `npm run build`.");
-    }
+        // If the file can't be found, throw an exception
+        if (! array_key_exists($fileName, $manifest)) {
+            return "";
+            // throw new Exception("Could not find {$fileName} in manifest. Try rebuilding your assets with `npm run build`.");
+        }
 
-    if ($includeCacheBuster === false) {
-        $manifest[$fileName] = explode('?id=', $manifest[$fileName])[0];
+        return uri("public/build/" . $manifest[$fileName]["file"]);
     }
-
-    return uri($manifest[$fileName]);
 }
 
 /**
@@ -348,7 +356,7 @@ if (! function_exists("lazy")) {
         }
 
         foreach ($types as $type) {
-            $path       = mix("/assets/{$type}/blocks/{$blockName}.{$type}");
+            $path       = vite("blocks/{$blockName}/resources/{$type}/{$blockName}.{$type}");
             $attributes .= " data-lazy-{$type}=\"{$path}\"";
         }
 

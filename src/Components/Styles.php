@@ -18,7 +18,7 @@ class Styles
     {
         if ($disableCritical !== true) {
             add_action("wp_enqueue_scripts", function () {
-                wp_enqueue_style('critical', mix('/assets/css/critical.css'));
+                wp_enqueue_style('critical', vite('resources/scss/critical.scss'));
             });
         }
     }
