@@ -116,7 +116,7 @@ class Theme
 
         // Enqueue the editor.js file when we're in the block editor.
         add_action('enqueue_block_editor_assets', function () {
-            wp_enqueue_script('editor-js', vite('resources/js/editor.js'), [], '1.0.0', 'true');
+            wp_enqueue_script('editor-js', mix('/assets/js/editor.js'), [], '1.0.0', 'true');
         });
 
         // Tweak ACF WYSIWYG

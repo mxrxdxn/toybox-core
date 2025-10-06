@@ -45,10 +45,11 @@ class Blocks
                 case "css":
                     foreach ($assetList as $assetHandle => $asset) {
                         if ($asset) {
-                            $split = explode("?id=", $asset);
-                            $url   = $split[0];
+                            $split       = explode("?id=", $asset);
+                            $url         = $split[0];
+                            $cacheBuster = $split[1];
 
-                            wp_register_style($assetHandle, $url, []);
+                            wp_register_style($assetHandle, $url, [], $cacheBuster);
                         }
                     }
 
@@ -57,10 +58,11 @@ class Blocks
                 case "js":
                     foreach ($assetList as $assetHandle => $asset) {
                         if ($asset) {
-                            $split = explode("?id=", $asset);
-                            $url   = $split[0];
+                            $split       = explode("?id=", $asset);
+                            $url         = $split[0];
+                            $cacheBuster = $split[1];
 
-                            wp_register_script($assetHandle, $url, []);
+                            wp_register_script($assetHandle, $url, [], $cacheBuster);
                         }
                     }
 

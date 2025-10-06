@@ -81,7 +81,6 @@ class MakeBlockCommand extends Command
         $acfSettings = str_replace('example-block', $sluggedName, $acfSettings);
         $acfSettings = str_replace('Example Block', $name, $acfSettings);
         $acfSettings = str_replace('group-id', uniqid("group_"), $acfSettings);
-        $acfSettings = str_replace('field-id', uniqid("field_"), $acfSettings);
         $acfSettings = str_replace('modified-timestamp', time(), $acfSettings);
         file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/acf-json/block-{$sluggedName}.json", $acfSettings);
 
