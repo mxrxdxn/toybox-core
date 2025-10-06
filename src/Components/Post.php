@@ -21,15 +21,19 @@ class Post
     /**
      * Calculates how long it takes to read an article, rounded up to the next minute.
      *
-     * @param int   $post           The post's ID.
-     * @param float $wordsPerMinute The words per minute score to use in the calculation. For reference, the average in
-     *                              the Maxweb office is ~343.1.
+     * @param WP_Post|int|null $post           The post's ID.
+     * @param float            $wordsPerMinute The words per minute score to use in the calculation. For reference, the average in
+     *                                         the Maxweb office is ~343.1.
      *
      * @return float
      */
-    public static function calculateReadingSpeed(int $post, float $wordsPerMinute = 238): float
+    public static function calculateReadingSpeed(\WP_Post|int|null $post = null, float $wordsPerMinute = 238): float
     {
-        $post = static::get($post);
+        if (is_int($post)) {
+            $post = static::get($post);
+        } elseif (is_null($post)) {
+            $post = static::get(get_the_ID());
+        }
 
         // Get the total amount of words for a page
         $wordCount = str_word_count(strip_tags(\Toybox\Core\Components\Blocks::renderContentString($post->post_content)));
@@ -45,7 +49,7 @@ class Post
      *
      * @return string
      */
-    public static function render(int|object|\WP_Post $post): string
+    public static function render(int|\WP_Post $post): string
     {
         return Blocks::renderContentString(get_the_content(post: $post));
     }
