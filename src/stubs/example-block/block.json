@@ -1,26 +1,27 @@
 {
-  "name": "toybox/example-block",
-  "title": "Example Block",
-  "description": "An example block.",
-  "version": "0.0.1",
-  "style": "example-block-css",
-  "script": "example-block-js",
-  "category": "common",
-  "icon": "align-wide",
-  "keywords": [],
-  "acf": {
-    "mode": "preview",
-    "renderTemplate": "template.php",
-    "validate": true,
-    "usePostMeta": false
-  },
-  "example": {
-    "attributes": {
-      "mode": "preview",
-      "data": {
-        "is_example": true
-      }
-    }
-  },
-  "align": "full"
+    "name": "toybox/example-block",
+    "title": "Example Block",
+    "description": "An example block.",
+    "version": "0.0.1",
+    "style": "example-block-css",
+    "script": "example-block-js",
+    "category": "common",
+    "icon": "align-wide",
+    "keywords": [],
+    "acf": {
+        "blockVersion": 3,
+        "mode": "preview",
+        "renderTemplate": "template.php",
+        "usePostMeta": false,
+        "validate": true
+    },
+    "example": {
+        "attributes": {
+            "mode": "preview",
+            "data": {
+                "is_example": true
+            }
+        }
+    },
+    "align": "full"
 }
