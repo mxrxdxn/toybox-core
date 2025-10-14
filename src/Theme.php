@@ -8,6 +8,7 @@ use Toybox\Core\Components\Admin;
 use Toybox\Core\Components\AdminBar;
 use Toybox\Core\Components\Blocks;
 use Toybox\Core\Components\Customizer;
+use Toybox\Core\Components\Dashboard;
 use Toybox\Core\Components\Login;
 use Toybox\Core\Components\Misc;
 use Toybox\Core\Components\Pattern;
@@ -161,6 +162,7 @@ class Theme
         Admin::setFooterText();
         AdminBar::setLogo();
         Login::boot();
+        Dashboard::hideWidgets();
 
         // Toybox setup complete hook
         do_action("toybox_setup_complete");
