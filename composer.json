@@ -17,7 +17,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.1",
+        "php": "^8.4",
         "filp/whoops": "^2.15",
         "symfony/var-dumper": "^6.3",
         "spatie/ray": "^1.38",
