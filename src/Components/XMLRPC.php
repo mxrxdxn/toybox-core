@@ -12,5 +12,10 @@ class XMLRPC
     public static function disable(): void
     {
         add_filter('xmlrpc_enabled', '__return_false');
+
+        add_filter('wp_headers', function ($headers) {
+            if (isset($headers['X-Pingback'])) unset($headers['X-Pingback']);
+            return $headers;
+        });
     }
 }
