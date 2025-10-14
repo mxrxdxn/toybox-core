@@ -11,17 +11,21 @@
 
 use Toybox\Core\Components\Blocks;
 
+// Block ID
 $id = 'example-' . $block['id'];
 
-?>
-
-<?php if (Blocks::isPreview($block)) : ?>
-    <?php
+// Handle block previews
+if (Blocks::isPreview($block)) {
     $blockName = basename(dirname(__FILE__));
     $path      = uri("/blocks/{$blockName}/preview.png");
-    ?>
-    <?= Blocks::preview($block, $path); ?>
-<?php return; endif; ?>
+
+    echo Blocks::preview($block, $path);
+    return;
+}
+
+// If you have any custom logic, you should put it under here.
+
+?>
 
 <div class="block-example <?= $block['className'] ?? "" ?>" id="<?= $id ?>">
     <!-- Your block content goes here. -->
