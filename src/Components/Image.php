@@ -148,6 +148,11 @@ class Image
                 return $upload;
             }
 
+            // If the original file is smaller, return the original file.
+            if (filesize($newFile) > filesize($originalFile)) {
+                return $upload;
+            }
+
             // Update resized/cropped versions to the new format.
             $sizes = $imageEditor->multi_resize(wp_get_registered_image_subsizes());
             if ($sizes) {
