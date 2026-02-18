@@ -27,6 +27,6 @@ if (Blocks::isPreview($block)) {
 
 ?>
 
-<div class="block-example <?= $block['className'] ?? "" ?>" id="<?= $id ?>">
+<div class="block-example <?= $block['className'] ?? "" ?>" id="<?= $id ?>" <?= lazy("block-example") ?>>
     <!-- Your block content goes here. -->
 </div>

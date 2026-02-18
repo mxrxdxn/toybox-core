@@ -77,11 +77,20 @@ class Theme
     /**
      * Runs actions in the "after_setup_theme" hook.
      *
+     * @param array $params
+     *
      * @return void
      * @throws Exception
      */
-    private static function setup(): void
+    private static function setup(array $params = []): void
     {
+        // Default params
+        $params = array_merge([
+            "set_first_visit_cookie"      => true,
+            "deregister_default_patterns" => true,
+            "hide_welcome_panel"          => true,
+        ], $params);
+
         // Toybox setup start hook
         do_action("toybox_setup_start");
 
@@ -134,16 +143,18 @@ class Theme
         add_filter('should_load_separate_core_block_assets', '__return_true');
 
         // Set the first visit cookie
-        add_action("init", function () {
-            if (isset($_COOKIE['_wp_first_time']) || User::loggedIn()) {
-                return false;
-            } else {
-                // expires in 30 days.
-                setcookie('_wp_first_time', 1, time() + (WEEK_IN_SECONDS * 4), COOKIEPATH, COOKIE_DOMAIN, false);
+        if ($params["set_first_visit_cookie"] === true) {
+            add_action("init", function () {
+                if (isset($_COOKIE['_wp_first_time']) || User::loggedIn()) {
+                    return false;
+                } else {
+                    // expires in 30 days.
+                    setcookie('_wp_first_time', 1, time() + (WEEK_IN_SECONDS * 4), COOKIEPATH, COOKIE_DOMAIN, false);
 
-                return true;
-            }
-        });
+                    return true;
+                }
+            });
+        }
 
         // Include the style vars inside wp_head().
         add_action("wp_head", function () {
@@ -151,13 +162,20 @@ class Theme
         });
 
         // Deregister core block patterns
-        Pattern::deregisterDefaultPatterns();
+        if ($params["deregister_default_patterns"] === true) {
+            Pattern::deregisterDefaultPatterns();
+        }
 
         // Register our default pattern
         Pattern::registerCategory("Theme Patterns", "theme-patterns");
 
+        // Perform table optimisation
         Misc::optimizeTables();
-        Admin::hideWelcomePanel();
+
+        if ($params["hide_welcome_panel"] === true) {
+            Admin::hideWelcomePanel();
+        }
+
         Admin::disableUpdateNag();
         Admin::setFooterText();
         AdminBar::setLogo();

@@ -324,14 +324,33 @@ if (! function_exists("lazy")) {
      *
      * @param string   $blockName     The name of the block for which lazy attributes should be generated.
      * @param string[] $types         Array of asset types (e.g., "css", "js") to include.
-     * @param bool     $isPreview     Whether the block is being rendered as a preview.
      * @param bool     $skipLoadCheck Whether to skip the check for previously loaded blocks.
      *
      * @return string Lazy load attributes as a string for use in HTML elements.
      * @throws Exception
      */
-    function lazy(string $blockName, array $types = ["css", "js"], bool $isPreview = false, bool $skipLoadCheck = false): string
+    function lazy(string $blockName, array $types = ["css", "js"], bool $skipLoadCheck = false): string
     {
+        // Check for Gutenberg, and load the assets manually if lazyloading is present (we can't lazyload in the block editor)
+        if (is_admin()) {
+            $current_screen = get_current_screen();
+
+            if ($current_screen && method_exists($current_screen, 'is_block_editor') && $current_screen->is_block_editor()) {
+                // Hopefully at the end of the tag, but this is the only way to ensure the style/script tags are loaded correctly
+                $string = ">";
+
+                foreach ($types as $type) {
+                    if ($type === "css") {
+                        $string .= "<link rel='stylesheet' href='" . mix("/assets/{$type}/blocks/{$blockName}.{$type}") . "'>";
+                    } elseif ($type === "js") {
+                        $string .= "<script src='" . mix("/assets/{$type}/blocks/{$blockName}.{$type}") . "'>";
+                    }
+                }
+
+                return $string .= "<!-- Editor Scripts/Styles --";
+            }
+        }
+
         if (! array_key_exists("toybox_lazyloaded_blocks", $GLOBALS)) {
             $GLOBALS["toybox_lazyloaded_blocks"] = [];
         }
@@ -343,7 +362,7 @@ if (! function_exists("lazy")) {
         $attributes = "";
 
         // If it's a preview, don't add the lazy load attribute.
-        if ($isPreview === true) {
+        if ($is_preview === true) {
             return $attributes;
         }
 
