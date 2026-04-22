@@ -40,7 +40,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "3.0.0";
+    const VERSION = "3.0.1";
 
     /**
      * This directory.
@@ -119,7 +119,7 @@ class Theme
             "deregister_default_patterns"    => true,
             "disable_dashicons"              => true,
             "disable_jquery_migrate"         => true,
-            "editor_styles"                  => "assets/css/editor.css",
+            "editor_styles"                  => Assets::getPath("resources/scss/editor.scss"),
             "hide_welcome_panel"             => true,
             "post_thumbnails"                => true,
             "set_first_visit_cookie"         => true,
