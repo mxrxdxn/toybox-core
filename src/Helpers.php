@@ -2,6 +2,7 @@
 
 use Carbon\Carbon;
 use Doctrine\Inflector\InflectorFactory;
+use Toybox\Core\Components\Assets;
 
 /**
  * The path to the mix-manifest.json file.
@@ -350,7 +351,7 @@ if (! function_exists("lazy")) {
         }
 
         foreach ($types as $type) {
-            $path       = mix("/assets/{$type}/blocks/{$blockName}.{$type}");
+            $path       = Assets::getPath("/blocks/{$blockName}/resources/{$type}/{$blockName}.{$type}");
             $attributes .= " data-lazy-{$type}=\"{$path}\"";
         }
 
@@ -439,22 +440,22 @@ if (! function_exists("block")) {
                     $atts = buildAttributesString($settings["attributes"]);
                     $atts .= ">";
 
-                    if ($path = mix("/assets/css/blocks/{$blockName}.css")) {
+                    if ($path = Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
                         $atts .= "<link rel=\"stylesheet\" href=\"{$path}\" type=\"text/css\" media=\"all\" />";
                     }
 
-                    if ($path = mix("/assets/js/blocks/{$blockName}.js")) {
+                    if ($path = Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
                         $atts .= "<script src=\"{$path}\" type=\"text/javascript\"></script>";
                     }
 
                     return $atts . "<!-- Preview mode asset loading --";
                 } else {
-                    if (mix("/assets/css/blocks/{$blockName}.css")) {
-                        wp_enqueue_style("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null);
+                    if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
+                        wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
                     }
 
-                    if (mix("/assets/js/blocks/{$blockName}.js")) {
-                        wp_enqueue_script("block-{$blockName}", mix("/assets/js/blocks/{$blockName}.js"), [], null, true);
+                    if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
+                        wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
                     }
 
                     return buildAttributesString($settings["attributes"]);
@@ -463,12 +464,12 @@ if (! function_exists("block")) {
 
             // If lazy load is disabled, return early.
             if ($settings["block"]["data"]["lazy_load"] === false) {
-                if (mix("/assets/css/blocks/{$blockName}.css")) {
-                    wp_enqueue_style("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null);
+                if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
+                    wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
                 }
 
-                if (mix("/assets/js/blocks/{$blockName}.js")) {
-                    wp_enqueue_script("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null, true);
+                if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
+                    wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
                 }
 
                 return buildAttributesString($settings["attributes"]);
@@ -476,19 +477,19 @@ if (! function_exists("block")) {
 
             // If we're lazy loading CSS, add the CSS path to the attributes.
             if ($settings["block"]["data"]["lazy_load_options_lazy_load_css"] === true) {
-                $settings["attributes"]["data-lazy-css"] = mix("/assets/css/blocks/{$blockName}.css");
+                $settings["attributes"]["data-lazy-css"] = Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss");
             } else {
-                if (mix("/assets/css/blocks/{$blockName}.css")) {
-                    wp_enqueue_style("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null);
+                if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
+                    wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
                 }
             }
 
             // If we're lazy loading JS, add the JS path to the attributes.
             if ($settings["block"]["data"]["lazy_load_options_lazy_load_js"] === true) {
-                $settings["attributes"]["data-lazy-js"] = mix("/assets/js/blocks/{$blockName}.js");
+                $settings["attributes"]["data-lazy-js"] = Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js");
             } else {
-                if (mix("/assets/js/blocks/{$blockName}.js")) {
-                    wp_enqueue_script("block-{$blockName}", mix("/assets/js/blocks/{$blockName}.js"), [], null, true);
+                if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
+                    wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
                 }
             }
 
