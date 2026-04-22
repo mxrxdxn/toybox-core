@@ -64,7 +64,6 @@ class Kernel
         $this->application->add(new ImagesConvertCommand());
         $this->application->add(new InspireCommand());
         $this->application->add(new MakeBlockCommand());
-        $this->application->add(new MakePostTypeCommand());
         $this->application->add(new MakeShortcodeCommand());
         $this->application->add(new MakePatternCommand());
     }
