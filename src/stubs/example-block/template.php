@@ -11,9 +11,6 @@
 
 use Toybox\Core\Components\Blocks;
 
-// Block ID
-$id = 'example-' . $block['id'];
-
 // Handle block previews
 if (Blocks::isPreview($block)) {
     $blockName = basename(dirname(__FILE__));
@@ -27,6 +24,6 @@ if (Blocks::isPreview($block)) {
 
 ?>
 
-<div class="block-example <?= $block['className'] ?? "" ?>" id="<?= $id ?>" <?= lazy("block-example") ?>>
+<div <?= block(["block" => $block, "attributes" => ["class" => "block-example"], "is_preview" => $is_preview]) ?>>
     <!-- Your block content goes here. -->
 </div>

@@ -1,6 +1,6 @@
-@import "@base/variables";
-@import "@base/mixins";
-@import "variables";
+@use "variables";
+@use "@scss/variables" as baseVariables;
+@use "@scss/mixins";
 
 .block-example {
     //
