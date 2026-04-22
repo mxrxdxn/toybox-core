@@ -11,6 +11,8 @@ const MIX_MANIFEST = TOYBOX_DIR . "/mix-manifest.json";
 /**
  * Fetch a versioned asset URL from the mix manifest file.
  *
+ * @deprecated Asset compilation now uses Vite, and mix is no longer supported. (3.0.0)
+ *
  * @param string      $fileName           Path of the file to load, relative to the theme base URI.
  * @param string|null $manifestPath       Path to the mix-manifest.json file.
  * @param bool        $includeCacheBuster Whether to include the cache buster string.
@@ -324,33 +326,14 @@ if (! function_exists("lazy")) {
      *
      * @param string   $blockName     The name of the block for which lazy attributes should be generated.
      * @param string[] $types         Array of asset types (e.g., "css", "js") to include.
+     * @param bool     $isPreview     Whether the block is being rendered as a preview.
      * @param bool     $skipLoadCheck Whether to skip the check for previously loaded blocks.
      *
      * @return string Lazy load attributes as a string for use in HTML elements.
      * @throws Exception
      */
-    function lazy(string $blockName, array $types = ["css", "js"], bool $skipLoadCheck = false): string
+    function lazy(string $blockName, array $types = ["css", "js"], bool $isPreview = false, bool $skipLoadCheck = false): string
     {
-        // Check for Gutenberg, and load the assets manually if lazyloading is present (we can't lazyload in the block editor)
-        if (is_admin()) {
-            $current_screen = get_current_screen();
-
-            if ($current_screen && method_exists($current_screen, 'is_block_editor') && $current_screen->is_block_editor()) {
-                // Hopefully at the end of the tag, but this is the only way to ensure the style/script tags are loaded correctly
-                $string = ">";
-
-                foreach ($types as $type) {
-                    if ($type === "css") {
-                        $string .= "<link rel='stylesheet' href='" . mix("/assets/{$type}/blocks/{$blockName}.{$type}") . "'>";
-                    } elseif ($type === "js") {
-                        $string .= "<script src='" . mix("/assets/{$type}/blocks/{$blockName}.{$type}") . "'>";
-                    }
-                }
-
-                return $string .= "<!-- Editor Scripts/Styles --";
-            }
-        }
-
         if (! array_key_exists("toybox_lazyloaded_blocks", $GLOBALS)) {
             $GLOBALS["toybox_lazyloaded_blocks"] = [];
         }
@@ -362,7 +345,7 @@ if (! function_exists("lazy")) {
         $attributes = "";
 
         // If it's a preview, don't add the lazy load attribute.
-        if ($is_preview === true) {
+        if ($isPreview === true) {
             return $attributes;
         }
 
@@ -400,5 +383,149 @@ if (! function_exists("array_merge_recursive_distinct")) {
         }
 
         return $merged;
+    }
+}
+
+if (! function_exists("block")) {
+    function block(array $settings = [])
+    {
+        // Get the file that called this method
+        $caller = debug_backtrace()[0]["file"];
+
+        // Get the block name from the file path
+        preg_match("#/blocks/(.+?)/(.+?)\.php$#", $caller, $matches);
+        $blockName = trim($matches[1]);
+
+        // Set default settings
+        $defaults = [
+            "block" => [
+                "data" => [
+                    "lazy_load"                       => "0", // The lazy load "enabled" option
+                    "lazy_load_options_lazy_load_css" => "0", // The lazy load "CSS" option
+                    "lazy_load_options_lazy_load_js"  => "0", // The lazy load "JS" option
+                    "additional_css_classes"          => "",  // Additional CSS classes to add to the block
+                ],
+            ],
+            "attributes"      => [
+                "class" => "block-{$blockName}", // The block's class attribute
+                "id"    => "{$blockName}",       // The block's ID attribute
+            ],
+            "is_preview"      => false, // Whether the block is being rendered as a preview
+            "skip_load_check" => false, // Whether to skip the check for previously loaded blocks
+        ];
+
+        $settings = array_merge_recursive_distinct($defaults, $settings);
+
+        // "Boolify" the lazy load options
+        $settings["block"]["data"]["lazy_load"]                       = (bool) $settings["block"]["data"]["lazy_load"];
+        $settings["block"]["data"]["lazy_load_options_lazy_load_css"] = (bool) $settings["block"]["data"]["lazy_load_options_lazy_load_css"];
+        $settings["block"]["data"]["lazy_load_options_lazy_load_js"]  = (bool) $settings["block"]["data"]["lazy_load_options_lazy_load_js"];
+
+        // Set the block ID
+        $settings["attributes"]["id"] = "{$blockName}-{$settings["block"]["id"]}";
+
+        // Set the additional CSS classes
+        $settings["attributes"]["class"] .= " " . $settings["block"]["data"]["additional_css_classes"];
+
+        if (! array_key_exists("toybox_lazyloaded_blocks", $GLOBALS)) {
+            $GLOBALS["toybox_lazyloaded_blocks"] = [];
+        }
+
+        // try {
+            // If it's a preview or the block has already been loaded, don't add the lazy load attributes.
+            if (($settings["skip_load_check"] === false && in_array($blockName, $GLOBALS["toybox_lazyloaded_blocks"])) || $settings["is_preview"] === true) {
+                if ($settings["is_preview"] === true) {
+                    // Hacky workaround, but it works.
+                    $atts = buildAttributesString($settings["attributes"]);
+                    $atts .= ">";
+
+                    if ($path = mix("/assets/css/blocks/{$blockName}.css")) {
+                        $atts .= "<link rel=\"stylesheet\" href=\"{$path}\" type=\"text/css\" media=\"all\" />";
+                    }
+
+                    if ($path = mix("/assets/js/blocks/{$blockName}.js")) {
+                        $atts .= "<script src=\"{$path}\" type=\"text/javascript\"></script>";
+                    }
+
+                    return $atts . "<!-- Preview mode asset loading --";
+                } else {
+                    if (mix("/assets/css/blocks/{$blockName}.css")) {
+                        wp_enqueue_style("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null);
+                    }
+
+                    if (mix("/assets/js/blocks/{$blockName}.js")) {
+                        wp_enqueue_script("block-{$blockName}", mix("/assets/js/blocks/{$blockName}.js"), [], null, true);
+                    }
+
+                    return buildAttributesString($settings["attributes"]);
+                }
+            }
+
+            // If lazy load is disabled, return early.
+            if ($settings["block"]["data"]["lazy_load"] === false) {
+                if (mix("/assets/css/blocks/{$blockName}.css")) {
+                    wp_enqueue_style("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null);
+                }
+
+                if (mix("/assets/js/blocks/{$blockName}.js")) {
+                    wp_enqueue_script("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null, true);
+                }
+
+                return buildAttributesString($settings["attributes"]);
+            }
+
+            // If we're lazy loading CSS, add the CSS path to the attributes.
+            if ($settings["block"]["data"]["lazy_load_options_lazy_load_css"] === true) {
+                $settings["attributes"]["data-lazy-css"] = mix("/assets/css/blocks/{$blockName}.css");
+            } else {
+                if (mix("/assets/css/blocks/{$blockName}.css")) {
+                    wp_enqueue_style("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null);
+                }
+            }
+
+            // If we're lazy loading JS, add the JS path to the attributes.
+            if ($settings["block"]["data"]["lazy_load_options_lazy_load_js"] === true) {
+                $settings["attributes"]["data-lazy-js"] = mix("/assets/js/blocks/{$blockName}.js");
+            } else {
+                if (mix("/assets/js/blocks/{$blockName}.js")) {
+                    wp_enqueue_script("block-{$blockName}", mix("/assets/js/blocks/{$blockName}.js"), [], null, true);
+                }
+            }
+
+            // Add it to the global lazyload list
+            $GLOBALS["toybox_lazyloaded_blocks"][] = $blockName;
+        // } catch (Exception $e) {
+        //     // Fail silently (we'll assume it's because the assets don't exist).
+        //     if (mix("/assets/css/blocks/{$blockName}.css")) {
+        //         wp_enqueue_style("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null);
+        //     }
+        //
+        //     if (mix("/assets/js/blocks/{$blockName}.js")) {
+        //         wp_enqueue_script("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null, true);
+        //     }
+        // }
+
+        return buildAttributesString($settings["attributes"]);
+    }
+}
+
+if (! function_exists("buildAttributesString")) {
+    /**
+     * Build a string of HTML attributes from an associative array.
+     *
+     * @param array $attributes An associative array of attributes where keys are attribute names and values are attribute values.
+     *
+     * @return string A concatenated string of HTML attributes.
+     */
+    function buildAttributesString(array $attributes): string
+    {
+        $atts = [];
+
+        // Loop through attributes and build string
+        foreach ($attributes as $key => $value) {
+            $atts[] = "{$key}=\"{$value}\"";
+        }
+
+        return implode(" ", $atts);
     }
 }
