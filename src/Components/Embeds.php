@@ -17,6 +17,10 @@ class Embeds
             }
         });
 
+        add_action("wp_footer", function () {
+            wp_deregister_script("wp-embed");
+        });
+
         add_action('init', function () {
             remove_action('rest_api_init', 'wp_oembed_register_route');
             remove_filter('oembed_dataparse', 'wp_filter_oembed_result', 10);

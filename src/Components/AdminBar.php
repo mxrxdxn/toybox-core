@@ -25,29 +25,36 @@ class AdminBar
      */
     public static function setLogo()
     {
-        add_action('wp_before_admin_bar_render', function () {
-            $stylesheetDir = get_bloginfo('stylesheet_directory');
+        add_action('admin_head', [static::class, 'setLogoInAdminBar']);
+        add_action('wp_head',    [static::class, 'setLogoInAdminBar']);
+    }
 
-            $output = <<<OUTPUT
-                <style>
-                    #wpadminbar #wp-admin-bar-wp-logo > .ab-item .ab-icon:before {
-                        background-image:    url({$stylesheetDir}/images/dashboard-logo.svg) !important;
-                        background-position: 0 0;
-                        background-repeat:   no-repeat;
-                        color:               rgba(0, 0, 0, 0);
-                        display:             block;
-                    }
-                    #wpadminbar #wp-admin-bar-wp-logo.hover > .ab-item .ab-icon {
-                        background-position: 0 0;
-                    }
-                    #wpadminbar #wp-admin-bar-wp-logo > .ab-item .ab-icon {
-                        width: 100px !important;
-                    }
-                </style>
-            OUTPUT;
+    public static function setLogoInAdminBar(): void
+    {
+        if (! is_admin_bar_showing()) {
+            return;
+        }
 
-            echo $output;
-        });
+        $stylesheetDir = get_bloginfo('stylesheet_directory');
+        $iconPath      = "{$stylesheetDir}/images/admin-logo.svg";
+
+        ?>
+        <style>
+            #wpadminbar #wp-admin-bar-wp-logo > .ab-item .ab-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            #wpadminbar #wp-admin-bar-wp-logo > .ab-item .ab-icon:before {
+                content: "";
+                display: block;
+                width: 20px;
+                height: 20px;
+                background: url('<?= esc_url($iconPath) ?>') center center / contain no-repeat;
+                color: transparent;
+            }
+        </style>
+        <?php
     }
 
     /**

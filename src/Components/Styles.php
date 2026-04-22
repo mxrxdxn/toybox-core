@@ -16,9 +16,17 @@ class Styles
      */
     public static function boot(bool $disableCritical = false): void
     {
+        add_action('wp_head', function () {
+            Assets::printClient();
+        }, 1);
+
+        add_action('admin_head', function () {
+            Assets::printClient();
+        }, 1);
+
         if ($disableCritical !== true) {
             add_action("wp_enqueue_scripts", function () {
-                wp_enqueue_style('critical', mix('/assets/css/critical.css'));
+                Assets::enqueue('resources/scss/critical.scss');
             });
         }
     }

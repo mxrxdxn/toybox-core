@@ -175,4 +175,20 @@ class Blocks
     {
         return "<figure><img style=\"width: 100%; height: 100%; object-fit: contain;\" src=\"{$path}\" alt=\"preview\" /></figure>";
     }
+
+    /**
+     * Disables the loading of block library styles on the front-end.
+     *
+     * This method removes the default block library CSS, block library theme CSS,
+     * and global styles to reduce unnecessary CSS loading when blocks are not required.
+     *
+     * @return void
+     */
+    public static function disableBlockLibraryAssets(): void {
+        add_action("wp_enqueue_scripts", function () {
+            wp_dequeue_style("wp-block-library");
+            wp_dequeue_style("wp-block-library-theme");
+            wp_dequeue_style("global-styles");
+        });
+    }
 }

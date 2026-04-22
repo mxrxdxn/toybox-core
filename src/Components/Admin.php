@@ -51,8 +51,8 @@ class Admin
     {
         add_filter('admin_footer_text', function () {
             $version = Theme::VERSION;
-            echo "<span id='footer-thankyou'>Powered by <a href='https://maxwebsolutions.co.uk'>Toybox {$version}</a></span>";
-        });
+            return "<span id='footer-thankyou'>Powered by <a href='https://maxwebsolutions.co.uk'>Toybox {$version}</a></span>\r\n";
+        }, 9999);
     }
 
     /**

@@ -7,35 +7,26 @@ use Carbon\Carbon;
 class Globals
 {
     /**
-     * Fetch the header include code.
+     * Retrieves global settings data, optionally using a cached version.
      *
-     * @param bool $cached Use a cached version of the code for performance benefits.
+     * @param bool $cached Determines whether to use the cached version of the data. If false, fresh data will be fetched.
      *
-     * @return string
+     * @return array The global settings data.
      */
-    public static function headerCode(bool $cached = true): string
+    public static function get(bool $cached = true): array
     {
-        $getCode = function () {
+        $getGlobals = function () {
             // Get header code from settings
-            return get_field("header", "options")["head_include"];
+            return get_field("global", "options") ?? [];
         };
 
-        // Get the cached version
-        if ($cached) {
-            // Check if the transient is set
-            $cachedCode = Transient::get("_toybox_head_include");
-
-            // Set the transient
-            if ($cachedCode === false) {
-                $cachedCode = $getCode();
-
-                Transient::set("_toybox_head_include", $cachedCode, Carbon::now()->addDay());
-            }
-
-            return $cachedCode;
+        if ($cached === false) {
+            return $getGlobals();
         }
 
-        return $getCode();
+        return Transient::remember("_toybox_globals", function () use ($getGlobals) {
+            return $getGlobals();
+        }, now()->addDay());
     }
 
     /**
