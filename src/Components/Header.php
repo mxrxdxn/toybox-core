@@ -22,6 +22,29 @@ class Header
     }
 
     /**
+     * Fetch the header settings.
+     *
+     * @param bool $cached Use a cached version of the settings for performance benefits.
+     *
+     * @return string
+     */
+    public static function settings(bool $cached = true): string
+    {
+        $getSettings = function () {
+            // Get header settings
+            return get_field("header", "options");
+        };
+
+        if ($cached === false) {
+            return $getSettings();
+        }
+
+        return Transient::remember("_toybox_header_settings", function () use ($getSettings) {
+            return $getSettings();
+        }, now()->addDay());
+    }
+
+    /**
      * Fetch the header include code.
      *
      * @param bool $cached Use a cached version of the code for performance benefits.
@@ -30,17 +53,6 @@ class Header
      */
     public static function code(bool $cached = true): string
     {
-        $getCode = function () {
-            // Get header code from settings
-            return get_field("header", "options")["head_include"];
-        };
-
-        if ($cached === false) {
-            return $getCode();
-        }
-
-        return Transient::remember("_toybox_head_include", function () use ($getCode) {
-            return $getCode();
-        }, now()->addDay());
+        return static::settings($cached)["head_include"];
     }
 }

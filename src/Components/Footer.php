@@ -5,6 +5,29 @@ namespace Toybox\Core\Components;
 class Footer
 {
     /**
+     * Fetch the footer settings.
+     *
+     * @param bool $cached Use a cached version of the settings for performance benefits.
+     *
+     * @return string
+     */
+    public static function settings(bool $cached = true): string
+    {
+        $getSettings = function () {
+            // Get footer settings
+            return get_field("footer", "options");
+        };
+
+        if ($cached === false) {
+            return $getSettings();
+        }
+
+        return Transient::remember("_toybox_footer_settings", function () use ($getSettings) {
+            return $getSettings();
+        }, now()->addDay());
+    }
+
+    /**
      * Fetch the footer include code.
      *
      * @param bool $cached Use a cached version of the code for performance benefits.
@@ -13,17 +36,6 @@ class Footer
      */
     public static function code(bool $cached = true): string
     {
-        $getCode = function () {
-            // Get header code from settings
-            return get_field("footer", "options")["foot_include"];
-        };
-
-        if ($cached === false) {
-            return $getCode();
-        }
-
-        return Transient::remember("_toybox_foot_include", function () use ($getCode) {
-            return $getCode();
-        }, now()->addDay());
+        return static::settings($cached)["foot_include"];
     }
 }
