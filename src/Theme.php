@@ -94,7 +94,7 @@ class Theme
      * @param array $args                           {
      *                                              Optional. An array of key-value pairs to configure the theme setup. Default values are:
      *
-     * @type bool   $automatic_content_lazy_loading Enables content lazy loading for images and iframes. Default true.
+     * @type bool   $automatic_content_lazy_loading Enables content lazy loading for images and iframes. Default false.
      * @type bool   $automatic_feed_links           Adds default posts and comments RSS feed links. Default true.
      * @type bool   $custom_background              Enables support for custom backgrounds. Default true.
      * @type bool   $custom_logo                    Enables support for custom logos. Default true.
@@ -113,7 +113,7 @@ class Theme
     {
         // Default params
         $args = wp_parse_args($args, [
-            "automatic_content_lazy_loading" => true,
+            "automatic_content_lazy_loading" => false,
             "automatic_feed_links"           => true,
             "custom_background"              => true,
             "custom_logo"                    => true,
