@@ -95,15 +95,51 @@ class ACF
     /**
      * Sets the save point for a block.
      *
-     * @deprecated since 3.0.0 - paths should auto-detect without needing this function.
-     *
      * @param string $blockName DEPRECATED - The name of the block.
      *
      * @return void
      */
     public static function setSavePoint(string $blockName = ""): void
     {
-        // Silence is golden
+        // Set the filename
+        add_filter('acf/json/save_file_name', function ($filename, $post, $load_path) {
+            $filename = strtolower(slugify($post['title'])) . '.json';
+
+            return $filename;
+        }, 10, 3);
+
+        // Set the path
+        add_filter("acf/json/save_paths", function ($paths, $post) {
+            // If we're saving a block's settings, save to the block itself.
+            if (
+                array_key_exists("location", $post)
+                && is_array($post["location"])
+                && array_key_exists(0, $post['location'])
+                && is_array($post["location"][0])
+                && array_key_exists(0, $post['location'][0])
+                && is_array($post["location"][0][0])
+                && array_key_exists("param", $post["location"][0][0])
+                && $post["location"][0][0]["param"] === "block"
+                && array_key_exists("value", $post["location"][0][0])
+            ) {
+                $blockName = str_ireplace("toybox/", "", $post["location"][0][0]["value"]);
+                $path      = Path::templateDirectory() . "/blocks/{$blockName}/acf-json";
+
+                // Fix directory separators
+                if (DIRECTORY_SEPARATOR === "\\") {
+                    $path = str_replace("/", "\\", $path);
+                }
+
+                // Create the directory
+                if (! is_dir($path)) {
+                    mkdir($path);
+                }
+
+                $paths = [$path];
+            }
+
+            return $paths;
+        }, 10, 2);
     }
 
     /**
