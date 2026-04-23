@@ -40,7 +40,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "3.0.5";
+    const VERSION = "3.0.6";
 
     /**
      * This directory.
