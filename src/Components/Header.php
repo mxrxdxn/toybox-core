@@ -26,13 +26,13 @@ class Header
      *
      * @param bool $cached Use a cached version of the settings for performance benefits.
      *
-     * @return string
+     * @return array
      */
-    public static function settings(bool $cached = true): string
+    public static function settings(bool $cached = true): array
     {
         $getSettings = function () {
             // Get header settings
-            return get_field("header", "options");
+            return get_field("header", "options") ?? [];
         };
 
         if ($cached === false) {

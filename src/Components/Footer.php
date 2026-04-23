@@ -9,13 +9,13 @@ class Footer
      *
      * @param bool $cached Use a cached version of the settings for performance benefits.
      *
-     * @return string
+     * @return array
      */
-    public static function settings(bool $cached = true): string
+    public static function settings(bool $cached = true): array
     {
         $getSettings = function () {
             // Get footer settings
-            return get_field("footer", "options");
+            return get_field("footer", "options") ?? [];
         };
 
         if ($cached === false) {
