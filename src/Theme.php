@@ -40,7 +40,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "3.0.4";
+    const VERSION = "3.0.5";
 
     /**
      * This directory.
@@ -50,18 +50,19 @@ class Theme
     /**
      * Boots the theme.
      *
-     * @param bool $disableCritical If set to true, the critical style will not be enqueued.
+     * @param bool  $disableCritical If set to true, the critical style will not be enqueued.
+     * @param array $args            Settings to pass into Theme::setup().
      *
      * @return void
      * @throws Exception
      */
-    public static function boot(bool $disableCritical = false): void
+    public static function boot(bool $disableCritical = false, array $args = []): void
     {
         // Load snippets
         Snippets::boot();
 
         // Theme setup
-        self::setup();
+        self::setup($args);
 
         // Enqueue styles and scripts
         Styles::boot($disableCritical);
@@ -309,10 +310,10 @@ class Theme
         if ($args["add_file_upload_support"] === true) {
             // Adds support for additional file types
             Misc::addFileSupport([
-                "svg"  => "image/svg+xml",
-                "webp" => "image/webp",
-                "avif" => "image/avif",
-            ]);
+                                     "svg"  => "image/svg+xml",
+                                     "webp" => "image/webp",
+                                     "avif" => "image/avif",
+                                 ]);
         }
 
         // Stop WordPress auto-changing "Wordpress" to "WordPress".
