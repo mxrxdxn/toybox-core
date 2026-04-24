@@ -82,6 +82,21 @@ class MakeBlockCommand extends Command
         $acfSettings = str_replace('Example Block', $name, $acfSettings);
         $acfSettings = str_replace('group-id', uniqid("group_"), $acfSettings);
         $acfSettings = str_replace('modified-timestamp', time(), $acfSettings);
+
+        $fields = [
+            "field-id-content-tab",
+            "field-id-content-title",
+            "field-id-settings-tab",
+            "field-id-settings-enable-lazy-load",
+            "field-id-settings-lazy-load-options",
+            "field-id-settings-lazy-load-options-css",
+            "field-id-settings-lazy-load-options-js",
+        ];
+
+        foreach ($fields as $field) {
+            $acfSettings = str_replace($field, uniqid("field_"), $acfSettings);
+        }
+
         file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/acf-json/block-{$sluggedName}.json", $acfSettings);
 
         // Also import the field group

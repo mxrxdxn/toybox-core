@@ -3,7 +3,7 @@
     "title": "Block: Example Block",
     "fields": [
         {
-            "key": "field_69984300c797c",
+            "key": "field-id-content-tab",
             "label": "Content",
             "name": "",
             "aria-label": "",
@@ -21,7 +21,7 @@
             "selected": 0
         },
         {
-            "key": "field_6998431ec797e",
+            "key": "field-id-content-title",
             "label": "Title",
             "name": "title",
             "aria-label": "",
@@ -42,7 +42,7 @@
             "append": ""
         },
         {
-            "key": "field_69984310c797d",
+            "key": "field-id-settings-tab",
             "label": "Settings",
             "name": "",
             "aria-label": "",
@@ -60,7 +60,7 @@
             "selected": 0
         },
         {
-            "key": "field_699842e0c797b",
+            "key": "field-id-settings-enable-lazy-load",
             "label": "Enable Lazy Load",
             "name": "lazy_load",
             "aria-label": "",
@@ -81,7 +81,7 @@
             "ui": 1
         },
         {
-            "key": "field_69984a87ab196",
+            "key": "field-id-settings-lazy-load-options",
             "label": "Lazy Load Options",
             "name": "lazy_load_options",
             "aria-label": "",
@@ -91,7 +91,7 @@
             "conditional_logic": [
                 [
                     {
-                        "field": "field_699842e0c797b",
+                        "field": "field-id-settings-enable-lazy-load",
                         "operator": "==",
                         "value": "1"
                     }
@@ -105,7 +105,7 @@
             "layout": "block",
             "sub_fields": [
                 {
-                    "key": "field_69984a95ab197",
+                    "key": "field-id-settings-lazy-load-options-css",
                     "label": "Lazy Load CSS",
                     "name": "lazy_load_css",
                     "aria-label": "",
@@ -126,7 +126,7 @@
                     "ui": 1
                 },
                 {
-                    "key": "field_69984aa3ab198",
+                    "key": "field-id-settings-lazy-load-options-js",
                     "label": "Lazy Load JS",
                     "name": "lazy_load_js",
                     "aria-label": "",
