@@ -56,6 +56,13 @@ class ACF
         });
     }
 
+    /**
+     * Adjusts the save location for ACF JSON files based on the context of the field group.
+     * If the field group corresponds to a block, the JSON is saved within the block's directory.
+     * Otherwise, it is saved to the default theme-level ACF JSON directory.
+     *
+     * @return void
+     */
     public static function saveBlockACFFields(): void
     {
         add_filter('acf/settings/save_json', function () {
