@@ -96,7 +96,7 @@ class ACF
             }
 
             return $blockJSON;
-        }, 10, 1);
+        },         10, 1);
     }
 
     /**
@@ -113,7 +113,7 @@ class ACF
             $filename = strtolower(slugify($post['title'])) . '.json';
 
             return $filename;
-        }, 10, 3);
+        },         10, 3);
 
         // Set the path
         add_filter("acf/json/save_paths", function ($paths, $post) {
@@ -146,7 +146,7 @@ class ACF
             }
 
             return $paths;
-        }, 10, 2);
+        },         10, 2);
     }
 
     /**
@@ -350,5 +350,29 @@ class ACF
         }
 
         return null;
+    }
+
+    /**
+     * Process shortcodes for specified field types.
+     *
+     * @param array $args The field types for which shortcodes should be processed.
+     *
+     * @return void
+     */
+    public static function doShortcodes(array $args = [])
+    {
+        $args = wp_parse_args($args, [
+            "textarea" => true,
+            "wysiwyg"  => false,
+        ]);
+
+        // Loop over all the field types
+        foreach ($args as $fieldType => $enabled) {
+            if ($enabled === true) {
+                add_filter("acf/format_value/type={$fieldType}", function ($content) {
+                    return do_shortcode($content);
+                });
+            }
+        }
     }
 }
