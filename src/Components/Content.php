@@ -12,7 +12,7 @@ class Content
      */
     public static function lazyLoad(): void
     {
-        add_filter('the_content', function ($content) {
+        add_filter('acf/format_value/type=wysiwyg', function ($content) {
             $content = preg_replace('/<img[^>]+>/', '<img loading="lazy" $0>', $content);
             return preg_replace('/<iframe(.*?)src=/i', '<iframe loading="lazy"$1src=', $content);
         });
