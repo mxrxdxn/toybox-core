@@ -120,6 +120,7 @@ class Theme
             "deregister_default_patterns"    => true,
             "disable_dashicons"              => true,
             "disable_jquery_migrate"         => true,
+            "do_shortcodes"                  => true,
             "editor_styles"                  => Assets::getPath("resources/scss/editor.scss"),
             "hide_welcome_panel"             => true,
             "post_thumbnails"                => true,
@@ -237,6 +238,15 @@ class Theme
         // Enables content lazy loading by automatically adding the "loading" attribute to all images and iframes.
         if ($args["automatic_content_lazy_loading"]) {
             Content::lazyLoad();
+        }
+
+        // Automatically parse shortcodes inside ACF fields
+        if ($args["do_shortcodes"] !== false) {
+            if ($args["do_shortcodes"] === true) {
+                ACF::doShortcodes();
+            } elseif (is_array($args["do_shortcodes"])) {
+                ACF::doShortcodes($args["do_shortcodes"]);
+            }
         }
 
         // Disables dashicons for non-logged-in users
