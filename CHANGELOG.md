@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.0.8 - 2026-04-29
+
+- Add initial `CHANGELOG.md` file documenting previous theme version updates. (885a77b)
+- Update lazy loading filter to target ACF WYSIWYG values instead of `the_content`. (efb38a9)
+- Add logic to adjust ACF JSON save location based on field group context. (e1a383f)
+- Add `doShortcodes` method to process shortcodes for ACF field types. (6d5705c)
+- Add support for handling ACF shortcodes via the `do_shortcodes` argument in `Theme::boot`. (328ec01)
+- Bump theme version to 3.0.8. (69e5d5a)
+
 ## v3.0.7 - 2026-04-24
 
 - Bump theme version to 3.0.7 and update ACF field key handling to ensure uniqueness. (92fe77d)
