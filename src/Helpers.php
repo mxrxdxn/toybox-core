@@ -432,79 +432,89 @@ if (! function_exists("block")) {
             $GLOBALS["toybox_lazyloaded_blocks"] = [];
         }
 
-        // try {
-            // If it's a preview or the block has already been loaded, don't add the lazy load attributes.
-            if (($settings["skip_load_check"] === false && in_array($blockName, $GLOBALS["toybox_lazyloaded_blocks"])) || $settings["is_preview"] === true) {
-                if ($settings["is_preview"] === true) {
-                    // Hacky workaround, but it works.
-                    $atts = buildAttributesString($settings["attributes"]);
-                    $atts .= ">";
+        // If it's a preview or the block has already been loaded, don't add the lazy load attributes.
+        if (($settings["skip_load_check"] === false && in_array($blockName, $GLOBALS["toybox_lazyloaded_blocks"])) || $settings["is_preview"] === true) {
+            if ($settings["is_preview"] === true) {
+                // Hacky workaround, but it works.
+                $atts = buildAttributesString($settings["attributes"]);
+                $atts .= ">";
 
-                    if ($path = Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
-                        $atts .= "<link rel=\"stylesheet\" href=\"{$path}\" type=\"text/css\" media=\"all\" />";
-                    }
-
-                    if ($path = Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
-                        $atts .= "<script src=\"{$path}\" type=\"text/javascript\"></script>";
-                    }
-
-                    return $atts . "<!-- Preview mode asset loading --";
-                } else {
-                    if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
-                        wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
-                    }
-
-                    if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
-                        wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
-                    }
-
-                    return buildAttributesString($settings["attributes"]);
+                if ($path = Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
+                    $atts .= "<link rel=\"stylesheet\" href=\"{$path}\" type=\"text/css\" media=\"all\" />";
                 }
-            }
 
-            // If lazy load is disabled, return early.
-            if ($settings["block"]["data"]["lazy_load"] === false) {
+                if ($path = Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
+                    $atts .= "<script src=\"{$path}\" type=\"module\"></script>";
+                }
+
+                return $atts . "<!-- Preview mode asset loading --";
+            } else {
                 if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
                     wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
                 }
 
                 if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
                     wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
+
+                    add_filter("script_loader_tag", function ($tag, $handle) use ($blockName) {
+                        if ($handle === "block-{$blockName}") {
+                            $tag = str_replace(' src', ' type="module" src', $tag);
+                        }
+                        return $tag;
+                    }, 10, 2);
                 }
 
                 return buildAttributesString($settings["attributes"]);
             }
+        }
 
-            // If we're lazy loading CSS, add the CSS path to the attributes.
-            if ($settings["block"]["data"]["lazy_load_options_lazy_load_css"] === true) {
-                $settings["attributes"]["data-lazy-css"] = Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss");
-            } else {
-                if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
-                    wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
-                }
+        // If lazy load is disabled, return early.
+        if ($settings["block"]["data"]["lazy_load"] === false) {
+            if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
+                wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
             }
 
-            // If we're lazy loading JS, add the JS path to the attributes.
-            if ($settings["block"]["data"]["lazy_load_options_lazy_load_js"] === true) {
-                $settings["attributes"]["data-lazy-js"] = Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js");
-            } else {
-                if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
-                    wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
-                }
+            if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
+                wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
+
+                add_filter("script_loader_tag", function ($tag, $handle) use ($blockName) {
+                    if ($handle === "block-{$blockName}") {
+                        $tag = str_replace(' src', ' type="module" src', $tag);
+                    }
+                    return $tag;
+                }, 10, 2);
             }
 
-            // Add it to the global lazyload list
-            $GLOBALS["toybox_lazyloaded_blocks"][] = $blockName;
-        // } catch (Exception $e) {
-        //     // Fail silently (we'll assume it's because the assets don't exist).
-        //     if (mix("/assets/css/blocks/{$blockName}.css")) {
-        //         wp_enqueue_style("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null);
-        //     }
-        //
-        //     if (mix("/assets/js/blocks/{$blockName}.js")) {
-        //         wp_enqueue_script("block-{$blockName}", mix("/assets/css/blocks/{$blockName}.css"), [], null, true);
-        //     }
-        // }
+            return buildAttributesString($settings["attributes"]);
+        }
+
+        // If we're lazy loading CSS, add the CSS path to the attributes.
+        if ($settings["block"]["data"]["lazy_load_options_lazy_load_css"] === true) {
+            $settings["attributes"]["data-lazy-css"] = Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss");
+        } else {
+            if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
+                wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
+            }
+        }
+
+        // If we're lazy loading JS, add the JS path to the attributes.
+        if ($settings["block"]["data"]["lazy_load_options_lazy_load_js"] === true) {
+            $settings["attributes"]["data-lazy-js"] = Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js");
+        } else {
+            if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
+                wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
+
+                add_filter("script_loader_tag", function ($tag, $handle) use ($blockName) {
+                    if ($handle === "block-{$blockName}") {
+                        $tag = str_replace(' src', ' type="module" src', $tag);
+                    }
+                    return $tag;
+                }, 10, 2);
+            }
+        }
+
+        // Add it to the global lazyload list
+        $GLOBALS["toybox_lazyloaded_blocks"][] = $blockName;
 
         return buildAttributesString($settings["attributes"]);
     }
@@ -528,5 +538,26 @@ if (! function_exists("buildAttributesString")) {
         }
 
         return implode(" ", $atts);
+    }
+}
+
+if (! function_exists("blockUri")) {
+    /**
+     * Constructs a URI to a block resource based on the given directory and path.
+     *
+     * @param string $dir  The directory name, which is sanitized to its base name.
+     * @param string $path The path to the block resource. Leading slashes are removed if present.
+     *
+     * @return string The constructed URI pointing to the block resource.
+     */
+    function blockUri(string $dir, string $path)
+    {
+        $dir = basename($dir);
+
+        if (str_starts_with($path, '/')) {
+            $path = substr($path, 1);
+        }
+
+        return uri("/blocks/{$dir}/{$path}");
     }
 }

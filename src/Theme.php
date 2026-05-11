@@ -40,7 +40,7 @@ class Theme
     /**
      * The theme version.
      */
-    const VERSION = "3.0.8";
+    const VERSION = "3.0.9";
 
     /**
      * This directory.
@@ -174,6 +174,13 @@ class Theme
         add_action('enqueue_block_editor_assets', function () {
             wp_enqueue_script('editor-js', Assets::getPath("/resources/js/editor.js"), [], '1.0.0', 'true');
         });
+
+        add_filter("script_loader_tag", function ($tag, $handle) {
+            if ($handle === "editor-js") {
+                $tag = str_replace(' src', ' type="module" src', $tag);
+            }
+            return $tag;
+        }, 10, 2);
 
         // Tweak ACF WYSIWYG
         add_filter('acf/fields/wysiwyg/toolbars', function ($toolbars) {

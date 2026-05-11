@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.0.9 - 2026-05-11
+
+- Update block asset loading to emit JavaScript as module scripts in preview, eager, and non-lazy loading paths.
+- Add module script handling for the editor JavaScript asset.
+- Add `blockUri` helper for constructing block resource URIs from a block directory and relative resource path.
+- Bump theme version to 3.0.9.
+
 ## v3.0.8 - 2026-04-29
 
 - Add initial `CHANGELOG.md` file documenting previous theme version updates. (885a77b)
