@@ -449,21 +449,6 @@ if (! function_exists("block")) {
 
                 return $atts . "<!-- Preview mode asset loading --";
             } else {
-                if (Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss")) {
-                    wp_enqueue_style("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/scss/{$blockName}.scss"), [], null);
-                }
-
-                if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
-                    wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
-
-                    add_filter("script_loader_tag", function ($tag, $handle) use ($blockName) {
-                        if ($handle === "block-{$blockName}") {
-                            $tag = str_replace(' src', ' type="module" src', $tag);
-                        }
-                        return $tag;
-                    }, 10, 2);
-                }
-
                 return buildAttributesString($settings["attributes"]);
             }
         }
@@ -476,13 +461,6 @@ if (! function_exists("block")) {
 
             if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
                 wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
-
-                add_filter("script_loader_tag", function ($tag, $handle) use ($blockName) {
-                    if ($handle === "block-{$blockName}") {
-                        $tag = str_replace(' src', ' type="module" src', $tag);
-                    }
-                    return $tag;
-                }, 10, 2);
             }
 
             return buildAttributesString($settings["attributes"]);
@@ -503,13 +481,6 @@ if (! function_exists("block")) {
         } else {
             if (Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js")) {
                 wp_enqueue_script("block-{$blockName}", Assets::getPath("/blocks/{$blockName}/resources/js/{$blockName}.js"), [], null, true);
-
-                add_filter("script_loader_tag", function ($tag, $handle) use ($blockName) {
-                    if ($handle === "block-{$blockName}") {
-                        $tag = str_replace(' src', ' type="module" src', $tag);
-                    }
-                    return $tag;
-                }, 10, 2);
             }
         }
 
@@ -538,26 +509,5 @@ if (! function_exists("buildAttributesString")) {
         }
 
         return implode(" ", $atts);
-    }
-}
-
-if (! function_exists("blockUri")) {
-    /**
-     * Constructs a URI to a block resource based on the given directory and path.
-     *
-     * @param string $dir  The directory name, which is sanitized to its base name.
-     * @param string $path The path to the block resource. Leading slashes are removed if present.
-     *
-     * @return string The constructed URI pointing to the block resource.
-     */
-    function blockUri(string $dir, string $path)
-    {
-        $dir = basename($dir);
-
-        if (str_starts_with($path, '/')) {
-            $path = substr($path, 1);
-        }
-
-        return uri("/blocks/{$dir}/{$path}");
     }
 }
