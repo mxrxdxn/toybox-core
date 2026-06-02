@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.0.10 - 2026-06-02
+
+- Remove redundant block JavaScript module-tag handling from block asset loading paths.
+- Remove unused `blockUri` helper.
+- Bump theme version to 3.0.10.
+
 ## v3.0.9 - 2026-05-11
 
 - Update block asset loading to emit JavaScript as module scripts in preview, eager, and non-lazy loading paths.
