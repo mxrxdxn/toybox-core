@@ -5,6 +5,11 @@ namespace Toybox\Core\Components;
 class Header
 {
     /**
+     * Transient key used for storing header settings in the cache.
+     */
+    public const string SETTINGS_TRANSIENT = "_toybox_header_settings";
+
+    /**
      * Cleans up unnecessary meta elements from the WordPress head section upon initialization.
      *
      * @return void
@@ -39,7 +44,7 @@ class Header
             return $getSettings();
         }
 
-        return Transient::remember("_toybox_header_settings", function () use ($getSettings) {
+        return Transient::remember(static::SETTINGS_TRANSIENT, function () use ($getSettings) {
             return $getSettings();
         }, now()->addDay());
     }
@@ -53,6 +58,12 @@ class Header
      */
     public static function code(bool $cached = true): string
     {
-        return static::settings($cached)["head_include"];
+        $settings = static::settings($cached);
+
+        if (array_key_exists("head_include", $settings)) {
+            return $settings["head_include"];
+        }
+
+        return "";
     }
 }

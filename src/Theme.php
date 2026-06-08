@@ -238,8 +238,10 @@ class Theme
         Admin::disableUpdateNag();
         Admin::setFooterText();
         AdminBar::setLogo();
+        AdminBar::addDocumentationLink();
         Dashboard::hideWidgets();
         Header::cleanup();
+        Misc::clearSettingsCacheOnOptionsSave();
         Login::boot();
 
         // Enables content lazy loading by automatically adding the "loading" attribute to all images and iframes.
@@ -327,10 +329,10 @@ class Theme
         if ($args["add_file_upload_support"] === true) {
             // Adds support for additional file types
             Misc::addFileSupport([
-                                     "svg"  => "image/svg+xml",
-                                     "webp" => "image/webp",
-                                     "avif" => "image/avif",
-                                 ]);
+                "svg"  => "image/svg+xml",
+                "webp" => "image/webp",
+                "avif" => "image/avif",
+            ]);
         }
 
         // Stop WordPress auto-changing "Wordpress" to "WordPress".

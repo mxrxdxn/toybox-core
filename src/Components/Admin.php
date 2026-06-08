@@ -16,6 +16,45 @@ class Admin
         add_action("admin_head", function () {
             include_once(Theme::CORE . "/stubs/StyleVars.php");
         });
+
+        static::registerDeveloperPage();
+    }
+
+    /**
+     * Registers the Toybox developer admin page.
+     *
+     * @return void
+     */
+    public static function registerDeveloperPage(): void
+    {
+        add_action('admin_menu', function () {
+            add_menu_page(
+                __('Toybox Dev Guide', 'toybox'),
+                __('Toybox Dev Guide', 'toybox'),
+                'manage_options',
+                'toybox-dev-guide',
+                [static::class, 'renderDeveloperPage'],
+                'dashicons-admin-tools',
+                80
+            );
+        });
+    }
+
+    /**
+     * Renders the Toybox developer admin page.
+     *
+     * @return void
+     */
+    public static function renderDeveloperPage(): void
+    {
+        if (! current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have permission to access this page.', 'toybox'));
+        }
+
+        // Render the page
+        ob_start();
+        require(__DIR__ . "/../stubs/DeveloperPage.php");
+        echo ob_get_clean();
     }
 
     /**

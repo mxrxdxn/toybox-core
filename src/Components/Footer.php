@@ -5,6 +5,11 @@ namespace Toybox\Core\Components;
 class Footer
 {
     /**
+     * Transient key used for storing footer settings in the cache.
+     */
+    public const string SETTINGS_TRANSIENT = "_toybox_footer_settings";
+
+    /**
      * Fetch the footer settings.
      *
      * @param bool $cached Use a cached version of the settings for performance benefits.
@@ -22,7 +27,7 @@ class Footer
             return $getSettings();
         }
 
-        return Transient::remember("_toybox_footer_settings", function () use ($getSettings) {
+        return Transient::remember(static::SETTINGS_TRANSIENT, function () use ($getSettings) {
             return $getSettings();
         }, now()->addDay());
     }
@@ -36,6 +41,12 @@ class Footer
      */
     public static function code(bool $cached = true): string
     {
-        return static::settings($cached)["foot_include"];
+        $settings = static::settings($cached);
+
+        if (array_key_exists("foot_include", $settings)) {
+            return $settings["foot_include"];
+        }
+
+        return "";
     }
 }

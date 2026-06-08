@@ -65,7 +65,7 @@ class AdminBar
     public static function replaceHowdy(): void
     {
         add_filter("admin_bar_menu", function ($adminBar) {
-            $now   = Carbon::now();
+            $now = Carbon::now();
 
             switch (true) {
                 case $now->hour >= 6 && $now->hour < 12:
@@ -92,5 +92,25 @@ class AdminBar
                 'title' => str_replace('Howdy,', $howdy, $myAccount->title),
             ]);
         });
+    }
+
+    public static function addDocumentationLink(): void
+    {
+        add_action('admin_bar_menu', function (\WP_Admin_Bar $admin_bar) {
+            if (! current_user_can('manage_options')) {
+                return;
+            }
+
+            $admin_bar->add_menu([
+                'id'     => 'toybox-dev-guide',
+                'parent' => null,
+                'group'  => null,
+                'title'  => 'Dev Guide', //you can use img tag with image link. it will show the image icon Instead of the title.
+                'href'   => admin_url('admin.php?page=toybox-dev-guide'),
+                'meta'   => [
+                    'title' => __('Dev Guide', 'toybox'), //This title will show on hover
+                ],
+            ]);
+        }, 500);
     }
 }

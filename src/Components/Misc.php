@@ -90,4 +90,19 @@ class Misc
             return array_merge($sizesArray, $s);
         });
     }
+
+    /**
+     * Clears cached header settings when an ACF options page is saved.
+     *
+     * @return void
+     */
+    public static function clearSettingsCacheOnOptionsSave(): void
+    {
+        add_action('acf/options_page/save', function ($post_id, $menu_slug) {
+            if ($menu_slug === "site-settings") {
+                Transient::delete(Header::SETTINGS_TRANSIENT);
+                Transient::delete(Footer::SETTINGS_TRANSIENT);
+            }
+        }, 10, 2);
+    }
 }
