@@ -100,6 +100,7 @@ class Misc
     {
         add_action('acf/options_page/save', function ($post_id, $menu_slug) {
             if ($menu_slug === "site-settings") {
+                Transient::delete(Globals::SETTINGS_TRANSIENT);
                 Transient::delete(Header::SETTINGS_TRANSIENT);
                 Transient::delete(Footer::SETTINGS_TRANSIENT);
             }
