@@ -1,44 +1,59 @@
 <?php
 
+use Highlight\Highlighter;
+use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
+use Toybox\Core\Docs\HighlightedCodeRenderer;
 use Toybox\Core\Theme;
+
+$packageAutoloader = dirname(__DIR__, 2) . '/vendor/autoload.php';
+
+if (
+    (! class_exists(GithubFlavoredMarkdownConverter::class) || ! class_exists(Highlighter::class))
+    && is_file($packageAutoloader)
+) {
+    require_once $packageAutoloader;
+}
 
 // Load all MD files from the `docs` directory.
 $docsDir = TOYBOX_DIR . '/vendor/toybox/core/src/Docs/Components';
 $mdFiles = [];
 
+$converter = new GithubFlavoredMarkdownConverter([
+    'html_input' => 'escape',
+    'allow_unsafe_links' => false,
+]);
+$converter->getEnvironment()->addRenderer(
+    FencedCode::class,
+    new HighlightedCodeRenderer(new Highlighter()),
+    10
+);
+
+$highlightStyles = HighlightUtilities\getStyleSheet('foundation');
+
 if (is_dir($docsDir)) {
-    $files = glob($docsDir . '/*.md');
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($docsDir, FilesystemIterator::SKIP_DOTS)
+    );
 
     foreach ($files as $file) {
-        $fileName           = basename($file, '.md');
-        $mdFiles[$fileName] = file_get_contents($file);
+        if (! $file->isFile() || strtolower($file->getExtension()) !== 'md') {
+            continue;
+        }
+
+        $relativePath       = substr($file->getPathname(), strlen($docsDir) + 1);
+        $fileName           = substr($relativePath, 0, -3);
+        $mdFiles[$fileName] = $converter->convert(file_get_contents($file->getPathname()))->getContent();
     }
+
+    ksort($mdFiles, SORT_NATURAL | SORT_FLAG_CASE);
 }
+
+$initialDocument = reset($mdFiles);
 
 ?>
 <div class="wrap">
     <h1><?= esc_html__('Toybox Developer', 'toybox') ?></h1>
-
-    <div class="card install-info">
-        <h2><?= esc_html__('Core', 'toybox') ?></h2>
-
-        <table class="widefat striped">
-            <tbody>
-                <tr>
-                    <th scope="row"><?= esc_html__('Version', 'toybox') ?></th>
-                    <td><?= esc_html(Theme::VERSION) ?></td>
-                </tr>
-                <tr>
-                    <th scope="row"><?= esc_html__('Core path', 'toybox') ?></th>
-                    <td><code><?= esc_html(Theme::CORE) ?></code></td>
-                </tr>
-                <tr>
-                    <th scope="row"><?= esc_html__('Theme path', 'toybox') ?></th>
-                    <td><code><?= esc_html(get_template_directory()) ?></code></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
 
     <div class="toybox-dev-container">
         <div class="docs-list">
@@ -65,7 +80,7 @@ if (is_dir($docsDir)) {
             <div class="card">
                 <div id="docs-content">
                     <?php if (! empty($mdFiles)): ?>
-                        <?= esc_html__('Select a document from the list', 'toybox') ?>
+                        <?= $initialDocument ?>
                     <?php else: ?>
                         <?= esc_html__('No documentation available', 'toybox') ?>
                     <?php endif; ?>
@@ -75,6 +90,8 @@ if (is_dir($docsDir)) {
     </div>
 
     <style>
+        <?= $highlightStyles ?>
+
         .install-info {
             margin-bottom: 1rem;
         }
@@ -156,45 +173,6 @@ if (is_dir($docsDir)) {
             const docLinks    = document.querySelectorAll('.doc-link');
             const docsContent = document.getElementById('docs-content');
 
-            function escapeHtml(text) {
-                const div       = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-
-            function simpleMarkdownToHtml(markdown) {
-                let html = escapeHtml(markdown);
-
-                // Headers
-                html = html.replace(/^######\s+(.+)$/gm, '<h6>$1</h6>');
-                html = html.replace(/^#####\s+(.+)$/gm, '<h5>$1</h5>');
-                html = html.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
-                html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
-                html = html.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>');
-                html = html.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
-
-                // Code blocks
-                html = html.replace(/```([^`]+)```/g, '<pre><code>$1</code></pre>');
-
-                // Inline code
-                html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-                // Bold
-                html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-
-                // Italic
-                html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-
-                // Links
-                html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-
-                // Line breaks
-                html = html.replace(/\n\n/g, '</p><p>');
-                html = '<p>' + html + '</p>';
-
-                return html;
-            }
-
             docLinks.forEach(function (link) {
                 link.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -207,13 +185,9 @@ if (is_dir($docsDir)) {
                     this.setAttribute('data-active', 'true');
 
                     if (docs[docName]) {
-                        docsContent.innerHTML = simpleMarkdownToHtml(docs[docName]);
+                        docsContent.innerHTML = docs[docName];
                     }
                 });
-
-                if (link.getAttribute('data-active') === 'true') {
-                    link.click();
-                }
             });
         })();
     </script>

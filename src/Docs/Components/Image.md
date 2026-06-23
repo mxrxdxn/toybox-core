@@ -91,7 +91,7 @@ echo Image::makeResponsiveFromThumbnail(
 
 ```php
 public static function makeResponsiveFromThumbnail(
-    WP_Post|int|null $post,
+    WP_Post|int|null $post = null,
     array $classes = ['toybox-responsive'],
     string $size = 'full',
     array $attributes = [],

@@ -28,6 +28,8 @@
         "mobiledetect/mobiledetectlib": "^3.74",
         "monolog/monolog": "^2",
         "jjgrainger/query": "^0.2.0",
-        "psr/log": "1.1.4"
+        "psr/log": "1.1.4",
+        "league/commonmark": "^2.7",
+        "scrivo/highlight.php": "^9.18"
     }
 }
