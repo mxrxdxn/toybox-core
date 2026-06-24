@@ -16,8 +16,9 @@ if (
 }
 
 // Load all MD files from the `docs` directory.
-$docsDir = TOYBOX_DIR . '/vendor/toybox/core/src/Docs/Components';
+$docsDir = TOYBOX_DIR . '/vendor/toybox/core/src/Docs';
 $mdFiles = [];
+$docGroups = [];
 
 $converter = new GithubFlavoredMarkdownConverter([
     'html_input' => 'escape',
@@ -47,9 +48,23 @@ if (is_dir($docsDir)) {
     }
 
     ksort($mdFiles, SORT_NATURAL | SORT_FLAG_CASE);
+
+    foreach (array_keys($mdFiles) as $fileName) {
+        $pathParts = explode('/', $fileName);
+        $folderName = count($pathParts) > 1 ? $pathParts[0] : 'Docs';
+
+        $docGroups[$folderName][] = $fileName;
+    }
+
+    ksort($docGroups, SORT_NATURAL | SORT_FLAG_CASE);
+
+    if (isset($docGroups['Installation'])) {
+        $docGroups = ['Installation' => $docGroups['Installation']] + $docGroups;
+    }
 }
 
-$initialDocument = reset($mdFiles);
+$initialFile = ! empty($docGroups) ? reset($docGroups)[0] : array_key_first($mdFiles);
+$initialDocument = $initialFile !== null ? $mdFiles[$initialFile] : false;
 
 ?>
 <div class="wrap">
@@ -58,21 +73,26 @@ $initialDocument = reset($mdFiles);
     <div class="toybox-dev-container">
         <div class="docs-list">
             <div class="card">
-                <h2>Components</h2>
+                <?php if (! empty($docGroups)): ?>
+                    <?php foreach ($docGroups as $folderName => $files): ?>
+                        <h2><?= esc_html(ucwords(str_replace(['-', '_'], ' ', $folderName))) ?></h2>
 
-                <ul>
-                    <?php if (! empty($mdFiles)): ?>
-                        <?php foreach (array_keys($mdFiles) as $index => $fileName): ?>
-                            <li>
-                                <a href="#" class="doc-link" data-doc="<?= esc_attr($fileName) ?>" <?= $index === 0 ? 'data-active="true"' : '' ?>>
-                                    <?= esc_html(ucwords(str_replace(['-', '_'], ' ', $fileName))) ?>
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                        <ul>
+                            <?php foreach ($files as $fileName): ?>
+                                <?php $docTitle = $folderName === 'Components' ? substr($fileName, strlen($folderName) + 1) : basename($fileName); ?>
+                                <li>
+                                    <a href="#" class="doc-link" data-doc="<?= esc_attr($fileName) ?>" <?= $fileName === $initialFile ? 'data-active="true"' : '' ?>>
+                                        <?= esc_html(ucwords(str_replace(['-', '_'], ' ', $docTitle))) ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <ul>
                         <li><?= esc_html__('No documentation files found', 'toybox') ?></li>
-                    <?php endif; ?>
-                </ul>
+                    </ul>
+                <?php endif; ?>
             </div>
         </div>
 
