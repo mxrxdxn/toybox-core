@@ -21,25 +21,43 @@
             "selected": 0
         },
         {
-            "key": "field-id-content-title",
-            "label": "Title",
-            "name": "title",
+            "key": "field-id-content-group",
+            "label": "Content",
+            "name": "content",
             "aria-label": "",
-            "type": "text",
-            "instructions": "The title for the block.",
-            "required": 1,
+            "type": "group",
+            "instructions": "",
+            "required": 0,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
                 "class": "",
                 "id": ""
             },
-            "default_value": "Example Block",
-            "maxlength": "",
-            "allow_in_bindings": 0,
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
+            "layout": "block",
+            "sub_fields": [
+                {
+                    "key": "field-id-content-title",
+                    "label": "Title",
+                    "name": "title",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "The title for the block.",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "Example Block",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": ""
+                }
+            ]
         },
         {
             "key": "field-id-settings-tab",

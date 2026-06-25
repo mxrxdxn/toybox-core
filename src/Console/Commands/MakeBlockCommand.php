@@ -85,6 +85,7 @@ class MakeBlockCommand extends Command
 
         $fields = [
             "field-id-content-tab",
+            "field-id-content-group",
             "field-id-content-title",
             "field-id-settings-tab",
             "field-id-settings-enable-lazy-load",
