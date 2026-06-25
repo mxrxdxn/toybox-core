@@ -28,14 +28,13 @@ class Admin
     public static function registerDeveloperPage(): void
     {
         add_action('admin_menu', function () {
-            add_menu_page(
+            add_submenu_page(
+                'tools.php',
                 __('Toybox Dev Guide', 'toybox'),
                 __('Toybox Dev Guide', 'toybox'),
                 'manage_options',
                 'toybox-dev-guide',
-                [static::class, 'renderDeveloperPage'],
-                'dashicons-admin-tools',
-                80
+                [static::class, 'renderDeveloperPage']
             );
         });
     }
