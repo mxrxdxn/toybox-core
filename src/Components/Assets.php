@@ -38,12 +38,30 @@ class Assets
      * This function caches the manifest to avoid redundant file reads
      * and parsing during subsequent calls.
      *
+     * @param string|bool $blockName The name of the block to retrieve the manifest for. If false, retrieves the manifest for the theme itself.
+     *
      * @return array|null The decoded contents of the manifest file as an associative array.
      *               Returns an empty array if the file does not exist or cannot be
      *               decoded into a valid array.
      */
-    public static function manifest(): ?array
+    public static function manifest(string|bool $blockName = false): ?array
     {
+        if ($blockName !== false) {
+            $manifestPath = get_stylesheet_directory() . "/blocks/{$blockName}/public/build/.vite/manifest.json";
+
+            if (! file_exists($manifestPath)) {
+                $manifest = [];
+                return $manifest;
+            }
+
+            $contents = file_get_contents($manifestPath);
+            $decoded  = json_decode($contents, true);
+
+            $manifest = is_array($decoded) ? $decoded : [];
+
+            return $manifest;
+        }
+
         static $manifest = null;
 
         if ($manifest !== null) {
@@ -189,6 +207,24 @@ class Assets
      */
     public static function getPath(string $entry): ?string
     {
+        if (str_starts_with($entry, '/blocks/')) {
+            // Extract the block name
+            $parts     = explode('/', trim($entry, '/'));
+            $blockName = $parts[1] ?? null;
+
+            // We need to use the block manifest.
+            // Remove /blocks/{blockName}/ from the start of $entry
+            $entry = preg_replace('#^/blocks/[^/]+/#', '', $entry);
+
+            $manifest = static::manifest($blockName);
+
+            if (empty($manifest[$entry]) || empty($manifest[$entry]['file'])) {
+                return null;
+            }
+
+            return URI::stylesheetDirectory() . "/blocks/{$blockName}/public/build/{$manifest[$entry]['file']}";
+        }
+
         $entry    = ltrim($entry, '/');
         $manifest = static::manifest();
 

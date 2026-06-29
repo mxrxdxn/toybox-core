@@ -150,6 +150,19 @@ class MakeBlockCommand extends Command
             $output->writeln("<info>Make sure you uncomment the script registration line inside ./blocks/{$sluggedName}/init.php</info>");
         }
 
+        // Create .gitignore
+        $ignoreFile = file_get_contents(Theme::CORE . "/stubs/example-block/.gitignore");
+        file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/.gitignore", $ignoreFile);
+
+        // Create package.json
+        $packageFile = file_get_contents(Theme::CORE . "/stubs/example-block/package.json");
+        $packageFile = str_replace('example-block', $sluggedName, $packageFile);
+        file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/package.json", $packageFile);
+
+        // Create vite.config.js
+        $viteFile = file_get_contents(Theme::CORE . "/stubs/example-block/vite.config.js");
+        file_put_contents(TOYBOX_DIR . "/blocks/{$sluggedName}/vite.config.js", $viteFile);
+
         // Show a final message if resources were added
         if (! ($withoutStyles || $withoutJS)) {
             $output->writeln("<comment>Your block assets should be automatically detected. If you are currently running `npm run watch`, you will need to cancel the process and start it again.</comment>");
